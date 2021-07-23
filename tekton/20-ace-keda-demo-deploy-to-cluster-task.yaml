@@ -31,16 +31,6 @@ spec:
       volumeMounts:
         - mountPath: /work
           name: work
-    - name: create-service
-      image: lachlanevenson/k8s-kubectl
-      command: ["kubectl"]
-      args:
-        - "apply"
-        - "-f"
-        - "/work/ace-keda-demo/tekton/ace-keda-demo-tekton-service.yaml"
-      volumeMounts:
-        - mountPath: /work
-          name: work
   volumes:
     - name: work
       emptyDir: {}

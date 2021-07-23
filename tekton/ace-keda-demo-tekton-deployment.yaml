@@ -1,26 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tea-tekton
+  name: ace-keda-demo
 spec:
   selector:
     matchLabels:
-      app: tea-tekton
+      app: ace-keda-demo
   replicas: 1
   template:
     metadata:
       labels:
-        app: tea-tekton
+        app: ace-keda-demo
     spec:
       volumes:
       - name: secret-volume-2
         secret:
-          secretName: jdbc-secret
+          secretName: mq-secret
       containers:
-      - name: tea-tekton
-        image: DOCKER_REGISTRY/tea-tekton:latest
-        ports:
-        - containerPort: 7800
+      - name: ace-keda-demo
+        image: DOCKER_REGISTRY/ace-keda-demo:latest
         volumeMounts:
         - name: secret-volume-2
-          mountPath: /var/run/secrets/jdbc
+          mountPath: /var/run/secrets/mq
