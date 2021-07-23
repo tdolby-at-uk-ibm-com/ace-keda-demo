@@ -29,4 +29,4 @@ USER aceuser
 ENV LICENSE=accept
 
 # Set entrypoint to run the server; should move the apply overrides to the startup script at some point
-ENTRYPOINT ["bash", "-c", "/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server --admin-rest-api -1 --no-nodejs"]
+ENTRYPOINT ["bash", "-c", "/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server --admin-rest-api -1 --no-nodejs --no-jvm"]
