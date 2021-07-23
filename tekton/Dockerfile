@@ -4,6 +4,7 @@
 #FROM tdolby/experimental:ace-minimal-11.0.0.11-alpine
 ARG BASE_IMAGE=ace-minimal:12.0.1.0-alpine
 FROM $BASE_IMAGE
+ARG MQ_DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.1.0.0-IBM-MQC-Redist-LinuxX64.tar.gz
 
 # Used for tekton and Maven containers
 
@@ -15,6 +16,9 @@ COPY ace-server /tmp/maven-output/ace-server/
 RUN chown -R aceuser:mqbrkrs /tmp/* && \
     (cd /tmp/maven-output/ace-server && tar -cf - * ) | ( cd /home/aceuser/ace-server && tar -xf - ) && \
     chmod 775 /home/aceuser/ace-server/ace-startup-script.sh 
+
+# Install MQ client libraries
+RUN mkdir /opt/mqm && curl ${MQ_DOWNLOAD_URL} | tar zx --exclude=tools --directory /opt/mqm
 
 # Kaniko seems to chmod this directory 755 by mistake sometimes, which causes trouble later
 RUN chmod 1777 /tmp
