@@ -4,7 +4,7 @@
     <connection>CLIENT</connection>
     <destinationQueueManagerName>MQoC</destinationQueueManagerName>
     <queueManagerHostname>HOSTNAME</queueManagerHostname>
-    <listenerPortNumber>PORT</listenerPortNumber>
+    <listenerPortNumber>PORTNUMBER</listenerPortNumber>
     <channelName>CLOUD.APP.SVRCONN</channelName>
     <CCDTUrl></CCDTUrl>
     <securityIdentity>MQoC</securityIdentity>

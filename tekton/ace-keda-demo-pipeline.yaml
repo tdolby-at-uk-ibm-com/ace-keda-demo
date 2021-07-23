@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: ace-pipeline
+  name: ace-keda-demo-pipeline
 spec:
   params:
     - name: dockerRegistry
@@ -9,13 +9,13 @@ spec:
   tasks:
     - name: build-from-source
       taskRef:
-        name: maven-ace-build
+        name: ace-keda-demo-build
       params:
         - name: dockerRegistry
           value: $(params.dockerRegistry)
     - name: deploy-to-cluster
       taskRef:
-        name: deploy-to-cluster
+        name: ace-keda-demo-deploy-to-cluster
       params:
         - name: dockerRegistry
           value: $(params.dockerRegistry)

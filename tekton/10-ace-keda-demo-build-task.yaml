@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: ace-keda-demo-build
+spec:
+  params:
+    - name: dockerRegistry
+      type: string
+  steps:
+    - name: clone
+      image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.18.1
+      script: |
+        #!/bin/sh
+        cd /work
+        git clone "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
+      volumeMounts:
+        - mountPath: /work
+          name: work
+    - name: maven-build
+      image: $(params.dockerRegistry)/ace-minimal-build:12.0.1.0-alpine
+      script: |
+        #!/bin/bash
+        export LICENSE=accept
+        . /opt/ibm/ace-12/server/bin/mqsiprofile
+        export PATH=/opt/ibm/ace-12/common/jdk/bin:$PATH
+        mkdir /work/maven-output
+        cd /work/ace-keda-demo
+        mvn --no-transfer-progress -Dinstall.work.directory=/work/maven-output/ace-server install
+      volumeMounts:
+        - mountPath: /work
+          name: work
+    - name: next-stage-container-setup
+      image: $(params.dockerRegistry)/ace-minimal-build:12.0.1.0-alpine
+      script: |
+        #!/bin/bash
+        cd /work/maven-output
+        cp /work/ace-demo-pipeline/tekton/Dockerfile Dockerfile
+      volumeMounts:
+        - mountPath: /work
+          name: work
+    - name: docker-build-and-push
+      image: gcr.io/kaniko-project/executor:v0.16.0
+      # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
+      env:
+        - name: "DOCKER_CONFIG"
+          value: "/tekton/home/.docker/"
+      command:
+        - /kaniko/executor
+      args:
+        - --dockerfile=/work/maven-output/Dockerfile
+        - --destination=$(params.dockerRegistry)/ace-keda-demo
+        - --context=/work/maven-output
+        - --build-arg=BASE_IMAGE=$(params.dockerRegistry)/ace-minimal:12.0.1.0-alpine
+        - --skip-tls-verify
+      volumeMounts:
+        - mountPath: /work
+          name: work
+  volumes:
+    - name: work
+      emptyDir: {}
+    - name: secret-volume-2
+      secret:
+        secretName: mq-secret

@@ -9,10 +9,7 @@
      <install.work.directory>/home/aceuser/ace-server</install.work.directory>
   </properties>
   <modules>
-    <module>TeaSharedLibraryJava</module>
-    <module>TeaSharedLibrary</module>
-    <module>TeaRESTApplication</module>
-    <module>TeaRESTApplication_UnitTest</module>
+    <module>ConsumeMQ</module>
     <module>demo-infrastructure</module>
   </modules>
 
