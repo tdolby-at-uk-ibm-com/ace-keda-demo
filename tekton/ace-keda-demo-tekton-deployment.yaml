@@ -19,6 +19,18 @@ spec:
       containers:
       - name: ace-keda-demo
         image: DOCKER_REGISTRY/ace-keda-demo:latest
+        imagePullPolicy: Always
         volumeMounts:
         - name: secret-volume-2
           mountPath: /var/run/secrets/mq
+        env:
+        - name: KEDA_MQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: keda-ibmmq-secret
+              key: ADMIN_USER
+        - name: KEDA_MQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keda-ibmmq-secret
+              key: ADMIN_PASSWORD
