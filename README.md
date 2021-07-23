@@ -3,7 +3,11 @@
 Based on the MQ Keda demo at https://github.com/ibm-messaging/mq-dev-patterns/tree/master/Go-K8s with 
 the ACE Maven/Tekton pipeline taken from https://github.com/ot4i/ace-demo-pipeline and modified.
 
-## Instructions
+## Scenario description (in progress)
+
+ACE replaces the consumer container in the MQ demo, and the rest is similar from a Keda point of view.
+
+## Instructions (in progress)
 
 Building the ACE app:
 ```
