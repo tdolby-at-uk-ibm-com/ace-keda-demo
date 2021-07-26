@@ -10,6 +10,15 @@ the keda QM polling need to be attached to the application container.
 
 ACE replaces the consumer container in the MQ demo, and the rest is similar from a Keda point of view.
 
+![Demo overview](keda/ace-keda-demo-picture.png)
+
+## Application description
+
+![Application overview](ConsumeMQ/input-to-trace-flow.png)
+
+
+## Startup time notes
+
 The container runs without node.js and Java by default to keep startup time to a minimum. On a 
 CodeReady Contaners cluster in a VM, the difference is significant.
 
