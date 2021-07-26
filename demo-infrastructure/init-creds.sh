@@ -22,7 +22,7 @@ fi
 echo "policy ${TEMPLATE_POLICYXML} before"
 cat ${TEMPLATE_POLICYXML}
 sed -i "s/HOSTNAME/`cat /run/secrets/mq/hostName`/g" ${TEMPLATE_POLICYXML}
-sed -i "s/PORTNUMBER/`cat /run/secrets/mq/portNumber`/g" ${TEMPLATE_POLICYXML}
+sed -i "s/00000/`cat /run/secrets/mq/portNumber`/g" ${TEMPLATE_POLICYXML}
 
 echo "policy ${TEMPLATE_POLICYXML} after"
 cat ${TEMPLATE_POLICYXML}
