@@ -20,6 +20,9 @@ Tekton is used to build and deploy the ACE application container, while the IBM 
 is used to provide a stream of messages. KEDA is configured to monitor the queue depth of the MQ on Cloud
 queue (DEMO.QUEUE in this case) and scale the ACE consumer container appropriately.
 
+The application containers use the ace-minimal image built using instructions (and Tekton build
+artifacts) from https://github.com/ot4i/ace-demo-pipeline/tree/memory-leak-checking/tekton/minimal-image-build
+
 ## Application description
 
 The application reads messages from the queue and prints them to the server console:
@@ -42,7 +45,23 @@ Update the keda/secrets.yaml to contain the correct MQ credentials (currently bl
 
 Apply the files in the keda directory to enable scaling for the ace-keda-demo container and
 also send messages to the MQ on Cloud QM using the mqkeda producer container.
+```
+kubectl apply -f keda/secrets.yaml
+kubectl apply -f keda/keda-configuration.yaml
+kubectl apply -f keda/deploy-producer.yaml
+```
 
+Monitor using kubectl, which should show the number of replicas increasing and decreasing 
+based on queue depth:
+```
+root@9ddf9a517959:/# kubectl get hpa -w
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   0/2 (avg)           1         5         4          65m
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   <unknown>/2 (avg)   1         5         0          65m
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   5/2 (avg)           1         5         1          66m
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   0/2 (avg)           1         5         4          66m
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   <unknown>/2 (avg)   1         5         0          67m
+keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   7/2 (avg)           1         5         1          67m
+```
 
 ## Startup time notes
 
