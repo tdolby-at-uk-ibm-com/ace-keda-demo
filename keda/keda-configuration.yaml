@@ -8,13 +8,13 @@ metadata:
 spec:
   scaleTargetRef:
     name: ace-keda-demo
-  pollingInterval: 10 # Optional. Default: 30 seconds
+  pollingInterval: 30 # Optional. Default: 30 seconds
   cooldownPeriod: 30 # Optional. Default: 300 seconds
-  maxReplicaCount: 5 # Optional. Default: 100
+  maxReplicaCount: 4 # Optional. Default: 100
   triggers:
     - type: ibmmq
       metadata:
-        queueDepth: '2' # Queue length target for HPA. Default: 5 messages
+        queueDepth: '0' # Queue length target for HPA. Default: 5 messages
         host: 'https://web-mqoc-419f.qm.eu-gb.mq.appdomain.cloud/ibmmq/rest/v2/admin/action/qmgr/MQoC/mqsc'
         queueManager: 'MQoC' # Your queue manager
         queueName: 'DEMO.QUEUE' # Your queue name

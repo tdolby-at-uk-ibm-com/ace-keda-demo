@@ -32,6 +32,18 @@ The application reads messages from the queue and prints them to the server cons
 
 ## Instructions (in progress)
 
+KEDA can be installed using the operator or via kubectl:
+```
+kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.3.0/keda-2.3.0.yaml
+```
+
+Update the keda/secrets.yaml to contain the correct MQ admin credentials (currently blank) for
+use by the KEDA scaler. This file then needs to be applied (before the app container is created
+due to the isse referenced above) so that the queue depth polling succeeds:
+```
+kubectl apply -f keda/secrets.yaml
+```
+
 Building the ACE app:
 ```
 kubectl create secret generic mq-secret --from-literal=USERID='blah' --from-literal=PASSWORD='blah' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
@@ -41,12 +53,9 @@ kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
 kubectl apply -f tekton/ace-keda-demo-pipeline-run-crc.yaml
 ```
 
-Update the keda/secrets.yaml to contain the correct MQ credentials (currently blank).
-
 Apply the files in the keda directory to enable scaling for the ace-keda-demo container and
 also send messages to the MQ on Cloud QM using the mqkeda producer container.
 ```
-kubectl apply -f keda/secrets.yaml
 kubectl apply -f keda/keda-configuration.yaml
 kubectl apply -f keda/deploy-producer.yaml
 ```
