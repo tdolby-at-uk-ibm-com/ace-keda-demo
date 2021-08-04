@@ -26,7 +26,7 @@ spec:
           command:
             - "/src/send"
           args:
-            - "750" # Optional. Number of messages to send. Default: 100
+            - "100" # Optional. Number of messages to send. Default: 100
             - "1" # Optional. Number of seconds to sleep between sending a message. Default: 1
           env:
           - name: APP_USER
