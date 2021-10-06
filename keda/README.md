@@ -9,8 +9,9 @@ parameters, a TriggerAuthentication setting to enable the KEDA scaler to connect
 to the MQ queue manager, and a HorizontalPodAutoscaler definition.
 
 The HorizontalPodAutoscaler should not be needed, but due to some issues with KEDA
-and some version of Kube, the KEDA autoscaler fails to create the HorizontalPodAutoscaler.
-If it is created beforehand, then the scaling works as normal.
+and some versions of Kube, the KEDA autoscaler fails to create the HorizontalPodAutoscaler.
+If it is created beforehand, then the scaling works as normal. The maxReplica and 
+minReplica settings are ignored.
 
 ## secrets.yaml
 
@@ -24,5 +25,5 @@ are desired, and the demo can be run using the MQ console to put test messages t
 the queue.
 
 Note that if this demo is run using a Developer edition container, then the ACE flow
-will only process one message per second; use the product container with care in this case.
+will only process one message per second; use the producer container with care in this case.
 
