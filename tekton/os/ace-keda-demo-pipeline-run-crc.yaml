@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: ace-keda-demo-pipeline-run-1
+spec:
+  serviceAccountName: ace-tekton-service-account
+  pipelineRef:
+    name: ace-keda-demo-pipeline
+  params:
+    - name: dockerRegistry
+      value: "image-registry.openshift-image-registry.svc:5000/default"

@@ -8,7 +8,7 @@ metadata:
 spec:
   scaleTargetRef:
     name: ace-keda-demo
-  pollingInterval: 30 # Optional. Default: 30 seconds
+  pollingInterval: 10 # Optional. Default: 30 seconds
   cooldownPeriod: 30 # Optional. Default: 300 seconds
   maxReplicaCount: 4 # Optional. Default: 100
   triggers:
@@ -35,3 +35,23 @@ spec:
     - parameter: password
       name: keda-ibmmq-secret
       key: ADMIN_PASSWORD
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: keda-hpa-ace-keda-demo
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ace-keda-demo
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 1
+          type: Utilization

@@ -37,19 +37,29 @@ KEDA can be installed using the operator or via kubectl:
 kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.3.0/keda-2.3.0.yaml
 ```
 
-Update the keda/secrets.yaml to contain the correct MQ admin credentials (currently blank) for
-use by the KEDA scaler. This file then needs to be applied (before the app container is created
-due to the isse referenced above) so that the queue depth polling succeeds:
+Update the keda/secrets.yaml to contain the correct MQ application and admin credentials
+(currently blank) for use by the KEDA scaler. This file then needs to be applied (before 
+the app container is created due to the issue referenced above) so that the queue depth 
+polling succeeds:
 ```
 kubectl apply -f keda/secrets.yaml
 ```
 
 Building the ACE app:
+
+See the [tekton README](tekton/README.md)
 ```
-kubectl create secret generic mq-secret --from-literal=USERID='blah' --from-literal=PASSWORD='blah' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
+kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
+kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+kubectl apply -f tekton/service-account.yaml
 kubectl apply -f tekton/10-ace-keda-demo-build-task.yaml 
 kubectl apply -f tekton/20-ace-keda-demo-deploy-to-cluster-task.yaml
 kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
+kubectl apply -f tekton/ace-keda-demo-pipeline-run.yaml
+```
+
+For CodeReady Containers or other OpenShift use cases, run this instead of the IKS pipeline run:
+```
 kubectl apply -f tekton/ace-keda-demo-pipeline-run-crc.yaml
 ```
 
