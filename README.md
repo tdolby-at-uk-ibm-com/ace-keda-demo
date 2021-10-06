@@ -32,6 +32,8 @@ The application reads messages from the queue and prints them to the server cons
 
 ## Instructions (in progress)
 
+### Installing KEDA
+
 KEDA can be installed using the operator or via kubectl:
 ```
 kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.3.0/keda-2.3.0.yaml
@@ -47,7 +49,7 @@ kubectl apply -f keda/secrets.yaml
 kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
 ```
 
-Building the ACE app:
+### Building the ACE app
 
 See the [tekton README](tekton/README.md) for build instructions, including building the
 ace-minimal containers.
