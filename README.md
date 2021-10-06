@@ -5,8 +5,8 @@ an ACE flow instead of the MQ consumer application. The ACE application is a sim
 the build pipeline is the ACE Maven/Tekton pipeline taken from https://github.com/ot4i/ace-demo-pipeline 
 and modified.
 
-Note that until https://github.com/kedacore/keda/issues/1938 is in a release, the admin credentials for
-the KEDA QM polling need to be attached to the application container.
+Note that for versions earlier than 2.4.0, issue https://github.com/kedacore/keda/issues/1938 means
+that the admin credentials for the KEDA QM polling need to be attached to the application container.
 
 ## Scenario description (in progress)
 
@@ -21,7 +21,7 @@ is used to provide a stream of messages. KEDA is configured to monitor the queue
 queue (DEMO.QUEUE in this case) and scale the ACE consumer container appropriately.
 
 The application containers use the ace-minimal image built using instructions (and Tekton build
-artifacts) from https://github.com/ot4i/ace-demo-pipeline/tree/memory-leak-checking/tekton/minimal-image-build
+artifacts) from https://github.com/ot4i/ace-demo-pipeline/tree/master/tekton/minimal-image-build
 
 ## Application description
 
@@ -40,38 +40,31 @@ kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.3.0/keda-
 Update the keda/secrets.yaml to contain the correct MQ application and admin credentials
 (currently blank) for use by the KEDA scaler. This file then needs to be applied (before 
 the app container is created due to the issue referenced above) so that the queue depth 
-polling succeeds:
+polling succeeds, and the mq-secret must be create to allow the container to run:
+
 ```
 kubectl apply -f keda/secrets.yaml
+kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
 ```
 
 Building the ACE app:
 
-See the [tekton README](tekton/README.md)
-```
-kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-419f.qm.eu-gb.mq.appdomain.cloud' --from-literal=portNumber='31175'
-kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-kubectl apply -f tekton/service-account.yaml
-kubectl apply -f tekton/10-ace-keda-demo-build-task.yaml 
-kubectl apply -f tekton/20-ace-keda-demo-deploy-to-cluster-task.yaml
-kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
-kubectl apply -f tekton/ace-keda-demo-pipeline-run.yaml
-```
+See the [tekton README](tekton/README.md) for build instructions, including building the
+ace-minimal containers.
 
-For CodeReady Containers or other OpenShift use cases, run this instead of the IKS pipeline run:
-```
-kubectl apply -f tekton/ace-keda-demo-pipeline-run-crc.yaml
-```
-
-Apply the files in the keda directory to enable scaling for the ace-keda-demo container and
-also send messages to the MQ on Cloud QM using the mqkeda producer container.
+Once the build has succeeded, apply the files in the keda directory to enable scaling for
+the ace-keda-demo container:
 ```
 kubectl apply -f keda/keda-configuration.yaml
+```
+
+Messages can be sent via the MQ on Cloud console, or by using the mqkeda producer container:
+```
 kubectl apply -f keda/deploy-producer.yaml
 ```
 
-Monitor using kubectl, which should show the number of replicas increasing and decreasing 
-based on queue depth:
+Monitor using the Kube console to inspect the number of pods for the deployment, or else use 
+kubectl to show the number of replicas increasing and decreasing based on queue depth:
 ```
 root@9ddf9a517959:/# kubectl get hpa -w
 keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   0/2 (avg)           1         5         4          65m
