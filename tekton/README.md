@@ -15,7 +15,7 @@ https://github.com/tdolby-at-uk-ibm-com/ace-docker/tree/master/experimental/ace-
 details on the minimal image, and [minimal image build instructions](minimal-image-build/README.md)
 on how to build the various pre-req images.
 
-For the initial testing, variants of ace-minimal:12.0.1.0-alpine have been pushed to tdolby/experimental 
+For the initial testing, variants of ace-minimal:12.0.2.0-alpine have been pushed to tdolby/experimental 
 on DockerHub, but this is not a stable location, and the images should be rebuilt by anyone attempting 
 to use this repo.
 
