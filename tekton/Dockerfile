@@ -1,15 +1,14 @@
-# Copyright (c) 2021 Open Technologies for Integration
+# Copyright (c) 2021-2023 Open Technologies for Integration
 # Licensed under the MIT license (see LICENSE for details)
 
 #FROM tdolby/experimental:ace-minimal-11.0.0.11-alpine
-ARG BASE_IMAGE=ace-minimal:12.0.2.0-alpine
+ARG BASE_IMAGE=ace-minimal:12.0.7.0-alpine
 FROM $BASE_IMAGE
 ARG MQ_DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.3.1.0-IBM-MQC-Redist-LinuxX64.tar.gz
-# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.1.0.0-IBM-MQC-Redist-LinuxX64.tar.gz
 
 # Used for tekton and Maven containers
 
-LABEL "maintainer"="tdolby@uk.ibm.com"
+LABEL "maintainer"="trevor.dolby@ibm.com"
 USER root
 WORKDIR /tmp/maven-output
 

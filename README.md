@@ -46,7 +46,7 @@ polling succeeds, and the mq-secret must be create to allow the container to run
 
 ```
 kubectl apply -f keda/secrets.yaml
-kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='32291'
+kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31361'
 ```
 
 ### Building the ACE app
