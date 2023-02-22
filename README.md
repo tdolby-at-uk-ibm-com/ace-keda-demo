@@ -36,7 +36,7 @@ The application reads messages from the queue and prints them to the server cons
 
 KEDA can be installed using the operator or via kubectl:
 ```
-kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.3.0/keda-2.3.0.yaml
+kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.9.2/keda-2.9.2.yaml
 ```
 
 Update the keda/secrets.yaml to contain the correct MQ application and admin credentials
