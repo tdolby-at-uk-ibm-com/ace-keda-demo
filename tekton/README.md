@@ -11,11 +11,11 @@ The tasks rely on several different containers:
 - Kaniko for building the container images.
 - The ace-minimal image for a small Alpine-based runtime container (~420MB, which fits into the IBM 
 Cloud container registry free tier limit of 512MB), and builder variant with Maven added in.  See 
-https://github.com/tdolby-at-uk-ibm-com/ace-docker/tree/master/experimental/ace-minimal for more 
+https://github.com/trevor-dolby-at-ibm-com/ace-docker/tree/master/experimental/ace-minimal for more 
 details on the minimal image, and [minimal image build instructions](minimal-image-build/README.md)
 on how to build the various pre-req images.
 
-For the initial testing, variants of ace-minimal:12.0.2.0-alpine have been pushed to tdolby/experimental 
+For the initial testing, variants of ace-minimal:12.0.7.0-alpine have been pushed to tdolby/experimental 
 on DockerHub, but this is not a stable location, and the images should be rebuilt by anyone attempting 
 to use this repo.
 
@@ -75,12 +75,12 @@ somewhere, the dashboard HTTP port can be made available locally as follows:
 kubectl --namespace tekton-pipelines port-forward --address 0.0.0.0 svc/tekton-dashboard 9097:9097
 ```
 
-## OpenShift CRC
+## OpenShift
 
 The majority of steps are the same, but the registry authentication is a little different; assuming 
 a session logged in as kubeadmin, it would look as follows:
 ```
-kubectl create secret docker-registry regcred --docker-server=image-registry.openshift-image-registry.svc:5000 --docker-username=kubeadmin --docker-password=$(oc whoami -t)
+kubectl create secret docker-registry regcred --docker-server=image-registry.openshift-image-registry.svc.cluster.local:5000 --docker-username=kubeadmin --docker-password=$(oc whoami -t)
 ```
 Note that the actual password itself (as opposed to the hash provided by "oc whoami -t") does not 
 work for registry authentication for some reason.
