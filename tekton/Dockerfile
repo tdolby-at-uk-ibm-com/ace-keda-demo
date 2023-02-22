@@ -4,7 +4,8 @@
 #FROM tdolby/experimental:ace-minimal-11.0.0.11-alpine
 ARG BASE_IMAGE=ace-minimal:12.0.2.0-alpine
 FROM $BASE_IMAGE
-ARG MQ_DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.1.0.0-IBM-MQC-Redist-LinuxX64.tar.gz
+ARG MQ_DOWNLOAD_URL=http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.3.1.0-IBM-MQC-Redist-LinuxX64.tar.gz
+# http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/redist/9.1.0.0-IBM-MQC-Redist-LinuxX64.tar.gz
 
 # Used for tekton and Maven containers
 
