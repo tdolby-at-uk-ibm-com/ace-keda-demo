@@ -13,7 +13,7 @@ spec:
         #!/bin/sh
         set -x
         cd /work
-        git clone "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
+        git clone "https://github.com/trevor-dolby-at-ibm-com/ace-keda-demo"
         export REG_WITH_ESCAPED_SLASH=`echo $(params.dockerRegistry) | sed 's/\//\\\\\\//g'`
         echo $REG_WITH_ESCAPED_SLASH
         sed -i "s/DOCKER_REGISTRY/$REG_WITH_ESCAPED_SLASH/g" /work/ace-keda-demo/tekton/ace-keda-demo-tekton-deployment.yaml
