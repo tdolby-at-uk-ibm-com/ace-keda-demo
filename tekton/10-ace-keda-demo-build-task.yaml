@@ -14,7 +14,7 @@ spec:
         cd /work
         git clone "https://github.com/trevor-dolby-at-ibm-com/ace-keda-demo"
         # Slightly hacky but works
-        chmod -R 777 /work/ace-demo-pipeline
+        chmod -R 777 /work/ace-keda-demo
       volumeMounts:
         - mountPath: /work
           name: work

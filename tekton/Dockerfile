@@ -18,7 +18,10 @@ RUN chown -R aceuser:mqbrkrs /tmp/* && \
     chmod 775 /home/aceuser/ace-server/ace-startup-script.sh 
 
 # Install MQ client libraries
-RUN mkdir /opt/mqm && curl ${MQ_DOWNLOAD_URL} | tar zx --exclude=tools --directory /opt/mqm
+RUN cd /tmp && \
+    aria2c -o mq-client.tar.gz  ${MQ_DOWNLOAD_URL} && \
+    tar -xf /tmp/mq-client.tar.gz --directory /opt/mqm && \
+    rm /tmp/mq-client.tar.gz
 
 # Kaniko seems to chmod this directory 755 by mistake sometimes, which causes trouble later
 RUN chmod 1777 /tmp
