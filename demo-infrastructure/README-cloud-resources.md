@@ -1,4 +1,4 @@
-# Cloud resources for pipeline use (in progress)
+# Cloud resources for demo use
 
 Need an IBM ID and then cloud registration at https://cloud.ibm.com/registration
 
@@ -6,14 +6,14 @@ The IBM Cloud tools should be available; installing them locally is one way to a
 the instructions at https://cloud.ibm.com/docs/cli?topic=cli-getting-started to install the ibmcloud
 command and plugins. 
 
-Tekton can be run from a dashboard or from the command line; the command is available from https://github.com/tektoncd/cli and
-can be installed locally.
+Tekton can be run from a dashboard or from the command line; the command is available from
+https://github.com/tektoncd/cli and can be installed locally.
 
 ## API keys for command-line and Tekton builds
 
-Need to create an API key: from the "Manage" menu at the top of the IBM Cloud dashboard, choose "Access (IAM)" and 
-then "API keys" on the left. This key is used for login from local commands, Tekton builds, and container image
-registry access.
+Need to create an API key if one does not already exist: from the "Manage" menu at the top of the IBM Cloud
+dashboard, choose "Access (IAM)" and then "API keys" on the left. This key is used for login from local
+commands, Tekton builds, and container image registry access.
 
 ## Kubernetes
 
@@ -46,8 +46,13 @@ kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker
 
 ## MQ on Cloud
 
-Create an MQ instance via "Create resource" on the IBM Cloud dashboard; create credentials and add them to the Kubernetes cluster as "mq-secret" like this:
+Create an MQ instance via "Create resource" on the IBM Cloud dashboard; create a queue called `DEMO.QUEUE`, then
+create user credentials for a user called `keda` and add them to the Kubernetes cluster as "mq-secret" like this:
 ```
-kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31361'
+kubectl create secret generic mq-secret --from-literal=USERID='keda' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31361'
 ```
-with the obvious replacements.
+with the obvious password replacement.
+
+MQ on Cloud enables SSL and queue manager security by default, but this can be changed. This demo
+assumes SSL has been disabled for the CLOUD.APP.SVRCONN channel, and that the `keda` user has
+been created and allowed to connect and access DEMO.QUEUE.
