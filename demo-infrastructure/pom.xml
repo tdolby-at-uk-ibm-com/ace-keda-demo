@@ -100,8 +100,27 @@
 	    <configuration>
 	      <executable>cp</executable>
 	      <arguments>
-		<argument>../demo-infrastructure//init-creds.sh</argument>
+		<argument>../demo-infrastructure/init-creds.sh</argument>
 		<argument>${install.work.directory}/ace-startup-script.sh</argument>
+	      </arguments>
+	    </configuration>
+	  </execution>
+	  <execution><id>optimize-work-dir</id>
+	    <phase>install</phase>
+	    <goals><goal>exec</goal></goals>
+	    <configuration>
+	      <executable>ibmint</executable>
+	      <arguments>
+		<argument>optimize</argument>
+		<argument>server</argument>
+		<argument>--work-dir</argument>
+		<argument>${install.work.directory}</argument>
+                <!-- Not going to be using the REST API remotely -->
+		<argument>--disable</argument>
+		<argument>NodeJS</argument>
+                <!-- Not going to be using Java (might change in the future) -->
+		<argument>--disable</argument>
+		<argument>JVM</argument>
 	      </arguments>
 	    </configuration>
 	  </execution>

@@ -33,6 +33,16 @@
       </plugin>
       <!-- Not strictly necessary, but eliminates log spam and empty JAR files -->
       <plugin>
+	<artifactId>maven-jar-plugin</artifactId>
+	<version>[0.0,)</version>
+	<executions>
+	  <execution>
+	    <id>default-jar</id>
+	    <phase>none</phase>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
 	<artifactId>maven-compiler-plugin</artifactId>
 	<version>[0.0,)</version>
 	<executions>

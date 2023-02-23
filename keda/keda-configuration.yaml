@@ -14,13 +14,11 @@ spec:
   triggers:
     - type: ibmmq
       metadata:
-        queueDepth: '0' # Queue length target for HPA. Default: 5 messages
-        host: 'https://web-mqoc-419f.qm.eu-gb.mq.appdomain.cloud/ibmmq/rest/v2/admin/action/qmgr/MQoC/mqsc'
+        host: 'https://web-mqoc-fd48.qm.us-south.mq.appdomain.cloud/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
         queueManager: 'MQoC' # Your queue manager
         queueName: 'DEMO.QUEUE' # Your queue name
-        tlsDisabled: 'false' # Set 'true' to disable TLS. Default: false
-        usernameFromEnv: 'KEDA_MQ_USER' #Optional: Provide admin username from env instead of as a secret
-        passwordFromEnv: 'KEDA_MQ_PASSWORD' # Optional: Provide admin password from env instead of as a secret
+      authenticationRef:
+        name: ace-keda-demo-trigger
 ---
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
@@ -35,23 +33,3 @@ spec:
     - parameter: password
       name: keda-ibmmq-secret
       key: ADMIN_PASSWORD
----
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: keda-hpa-ace-keda-demo
-  namespace: default
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: ace-keda-demo
-  minReplicas: 1
-  maxReplicas: 1
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          averageUtilization: 1
-          type: Utilization
