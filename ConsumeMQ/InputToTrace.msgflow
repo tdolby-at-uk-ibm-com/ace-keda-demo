@@ -6,7 +6,7 @@
     <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/ConsumeMQ/icons/full/obj16/InputToTrace.gif"/>
     <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/ConsumeMQ/icons/full/obj30/InputToTrace.gif"/>
     <composition>
-      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="17,36" queueName="DEMO.QUEUE" policyUrl="MQoC">
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="17,36" queueName="DEMO.QUEUE">
         <translation xmi:type="utility:ConstantString" string="MQ Input"/>
       </nodes>
       <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="327,36" destination="file" filePath="/proc/self/fd/1" pattern="Received message: ${Body}&#xA;">

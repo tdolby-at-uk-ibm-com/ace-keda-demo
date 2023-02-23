@@ -31,3 +31,4 @@ cp ${TEMPLATE_POLICYXML} /home/aceuser/ace-server/run/DefaultPolicies/
 mqsisetdbparms -w /home/aceuser/ace-server -n mq::MQoC -u `cat /run/secrets/mq/USERID` -p `cat /run/secrets/mq/PASSWORD`
 
 sed -i "s/#policyProject: 'DefaultPolicies'/policyProject: 'DefaultPolicies'/g" /home/aceuser/ace-server/server.conf.yaml
+sed -i "s/#remoteDefaultQueueManager: ''/remoteDefaultQueueManager: '{DefaultPolicies}:MQoC'/g" /home/aceuser/ace-server/server.conf.yaml
