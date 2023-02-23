@@ -12,7 +12,7 @@ spec:
       script: |
         #!/bin/sh
         cd /work
-        git clone "https://github.com/trevor-dolby-at-ibm-com/ace-keda-demo"
+        git clone "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
         # Slightly hacky but works
         chmod -R 777 /work/ace-keda-demo
       volumeMounts:
