@@ -3,8 +3,8 @@
   <policy policyType="MQEndpoint" policyName="MQoC" policyTemplate="MQEndpoint">
     <connection>CLIENT</connection>
     <destinationQueueManagerName>MQoC</destinationQueueManagerName>
-    <queueManagerHostname>mqoc-fd48.qm.us-south.mq.appdomain.cloud</queueManagerHostname>
-    <listenerPortNumber>31361</listenerPortNumber>
+    <queueManagerHostname>HOSTNAME</queueManagerHostname>
+    <listenerPortNumber>00000</listenerPortNumber>
     <channelName>CLOUD.APP.SVRCONN</channelName>
     <CCDTUrl></CCDTUrl>
     <securityIdentity>MQoC</securityIdentity>
