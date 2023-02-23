@@ -46,10 +46,9 @@ RedHat's Custom Metrics Autoscaler 2.7.1 on OpenShift 4.12) or via kubectl:
 kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.9.2/keda-2.9.2.yaml
 ```
 
-Update the keda/secrets.yaml to contain the correct MQ application and admin credentials
-(currently blank) for use by the KEDA scaler. This file then needs to be applied (before 
-the app container is created due to the issue referenced above) so that the queue depth 
-polling succeeds, and the mq-secret must be create to allow the container to run:
+Update the keda/secrets.yaml file to contain the correct MQ application and admin credentials
+(currently blank) for use by the KEDA scaler. This file then needs to be applied before 
+the app container is created, and the mq-secret must be create to allow the container to run:
 
 ```
 kubectl apply -f keda/secrets.yaml
@@ -85,6 +84,36 @@ keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   <unknown>/2 (avg)   1       
 keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   7/2 (avg)           1         5         1          67m
 ```
 
+## Cloud Pak for Integration (CP4i) ACE operator
+
+KEDA assumes that it is scaling Kubernetes Deployments, but this approach will not work when
+scaling servers managed by the ACE operator using IntegrationServer or IntegrationRuntime
+custom resources (CRs). Although KEDA can change the number of replicas in the Deployment, 
+the operator will be trying to ensure the Deployment for the server matches the CR, and so
+it will change the replica setting back to the CR-provided value.
+
+The solution is to scale the CR itself rather than the Deployment. Both IntegrationServer and
+IntegrationRuntime provide the correct interfaces to enable KEDA to set the number of replicas,
+and the only change required is to the `scaleTargetRef` in the KEDA configuration. Instead of
+```
+  scaleTargetRef:
+    name: ace-keda-demo
+```
+the CR can be specified instead, as follows for an IntegrationServer:
+```
+  scaleTargetRef:
+    apiVersion: appconnect.ibm.com/v1beta1
+    kind: IntegrationServer
+    name: is-01-consumemq
+```
+and for IntegrationRuntime CRs:
+```
+  scaleTargetRef:
+    apiVersion: appconnect.ibm.com/v1beta1
+    kind: IntegrationRuntime
+    name: ir-01-quickstart
+```
+
 ## Common errors
 
 Examining the KEDA operator pod logs can often provide a clue if unexpected behaviour occurs.
@@ -116,9 +145,9 @@ The solution is to set the queueDepth to a positive value, as this does not prev
 
 ### KEDA failing to authenticate to the MQ queue manager
 
-Verify the credentials used, noting that the values in keda-secrets.yaml must be base64-encoded.
-The values must be base64-encoded, and must not have encoded newlines; creating the encoded text
-by running `echo` and `base64` can lead to this without it being obvious.
+Verify the credentials used, noting that the values in keda-secrets.yaml must be base64-encoded and
+must not have encoded newlines; creating the encoded text by running `echo` and `base64` can lead
+to this without it being obvious.
 
 Running
 ```
@@ -144,5 +173,5 @@ unlikely to be the cause for recent KEDA versions, but may affect old installati
 ## Startup time notes
 
 The build uses the `ibmint optimize server` command to minimize the resources loaded when the server
-starts up. Startup times are expected to take a few seconds, including the time take to connect to
+starts up. Startup times are expected to take a few seconds, including the time taken to connect to
 (and authenticate to) the remote MQ queue manager.
