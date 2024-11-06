@@ -28,6 +28,6 @@ spec:
       # Minikube
       value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
     - name: url
-      value: "https://github.com/tdolby-at-uk-ibm-com/ace-kedo-demo"
+      value: "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
     - name: revision
       value: "v13-update"
