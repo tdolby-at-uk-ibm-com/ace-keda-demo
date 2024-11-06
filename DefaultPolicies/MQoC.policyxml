@@ -8,9 +8,9 @@
     <channelName>CLOUD.APP.SVRCONN</channelName>
     <CCDTUrl></CCDTUrl>
     <securityIdentity>MQoC</securityIdentity>
-    <useSSL>false</useSSL>
+    <useSSL>true</useSSL>
     <SSLPeerName></SSLPeerName>
-    <SSLCipherSpec></SSLCipherSpec>
+    <SSLCipherSpec>ANY_TLS12_OR_HIGHER</SSLCipherSpec>
     <SSLCertificateLabel></SSLCertificateLabel>
     <MQApplName></MQApplName>
     <reconnectOption>default</reconnectOption>
