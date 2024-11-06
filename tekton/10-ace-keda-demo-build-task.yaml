@@ -20,8 +20,6 @@ spec:
       type: string
     - name: revision
       type: string
-    - name: buildImage
-      type: string
     - name: runtimeBaseImage
       type: string
   results:
@@ -48,7 +46,7 @@ spec:
         - mountPath: /work
           name: work
     - name: ibmint-build
-      image: $(params.buildImage)
+      image: $(params.runtimeBaseImage)
       #image: cp.icr.io/cp/appc/ace:12.0.11.0-r1
       #
       # Runs the build and unit test phases, leaving the results in the work directory
@@ -72,7 +70,7 @@ spec:
         - mountPath: /work
           name: work
     - name: next-stage-container-setup
-      image: $(params.buildImage)
+      image: $(params.runtimeBaseImage)
       script: |
         #!/bin/bash
         cd /work/maven-output/home/aceuser
