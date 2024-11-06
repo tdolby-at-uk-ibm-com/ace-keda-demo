@@ -4,20 +4,42 @@ metadata:
   name: ace-keda-demo-pipeline
 spec:
   params:
-    - name: dockerRegistry
+    - name: outputRegistry
+      type: string
+    - name: url
+      type: string
+      default: "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
+    - name: revision
+      type: string
+      default: "v13-update"
+    - name: buildImage
+      type: string
+    - name: runtimeBaseImage
       type: string
   tasks:
     - name: build-from-source
       taskRef:
         name: ace-keda-demo-build
       params:
-        - name: dockerRegistry
-          value: $(params.dockerRegistry)
+        - name: outputRegistry
+          value: $(params.outputRegistry)
+        - name: url
+          value: $(params.url)
+        - name: revision
+          value: $(params.revision)
+        - name: runtimeBaseImage
+          value: $(params.runtimeBaseImage)
     - name: deploy-to-cluster
       taskRef:
         name: ace-keda-demo-deploy-to-cluster
       params:
         - name: dockerRegistry
-          value: $(params.dockerRegistry)
+          value: $(params.outputRegistry)
+        - name: url
+          value: $(params.url)
+        - name: revision
+          value: $(params.revision)
+        - name: tag
+          value: "$(tasks.build-from-source.results.tag)"
       runAfter:
         - build-from-source

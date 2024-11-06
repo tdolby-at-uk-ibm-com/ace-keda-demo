@@ -3,31 +3,71 @@ kind: Task
 metadata:
   name: ace-keda-demo-build
 spec:
+  # The security and environment settings are needed for OpenShift in a non-default
+  # namespace such as cp4i. Kaniko is expecting to be root in the container.
+  stepTemplate:
+    securityContext:
+      runAsUser: 0
+    env:
+      - name: "HOME"
+        value: "/tekton/home"
+      - name: "LICENSE"
+        value: "accept"
   params:
-    - name: dockerRegistry
+    - name: outputRegistry
       type: string
+    - name: url
+      type: string
+    - name: revision
+      type: string
+    - name: buildImage
+      type: string
+    - name: runtimeBaseImage
+      type: string
+  results:
+    - name: tag
+      description: image tag of the form 20240220135127-6fe9106
   steps:
     - name: clone
       image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.18.1
       script: |
         #!/bin/sh
+        set -e # Fail on error
         cd /work
-        git clone "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
-        # Slightly hacky but works
-        chmod -R 777 /work/ace-keda-demo
+        git clone -b $(params.revision) $(params.url)
+        cd ace-demo-pipeline
+        export DATE=$(date '+%Y%m%d%H%M%S')
+        export COMMIT=$(git log -1 --pretty=%h)
+        export TAG="$DATE"-"$COMMIT"
+        echo Setting container tag to "$TAG"
+        echo -n "$TAG" > $(results.tag.path)
+
+        # Slightly hacky but works . . . 
+        chmod -R 777 /work/ace-demo-pipeline
       volumeMounts:
         - mountPath: /work
           name: work
-    - name: maven-build
-      image: $(params.dockerRegistry)/ace-minimal-build:12.0.7.0-alpine
+    - name: ibmint-build
+      image: $(params.buildImage)
+      #image: cp.icr.io/cp/appc/ace:12.0.11.0-r1
+      #
+      # Runs the build and unit test phases, leaving the results in the work directory
+      # for later steps.
+      #
       script: |
         #!/bin/bash
+        
         export LICENSE=accept
         . /opt/ibm/ace-12/server/bin/mqsiprofile
-        export PATH=/opt/ibm/ace-12/common/jdk/bin:$PATH
-        mkdir /work/maven-output
-        cd /work/ace-keda-demo
-        mvn --no-transfer-progress -Dinstall.work.directory=/work/maven-output/ace-server install
+        
+        set -e # Fail on error - this must be done after the profile in case the container has the profile loaded already
+
+        cd /work/ace-demo-pipeline
+        mkdir /work/ibmint-output
+        mqsicreateworkdir /work/ibmint-output/ace-server
+        # Using --compile-maps-and-schemas for 12.0.11 and later . . . 
+        ibmint deploy --input-path . --output-work-directory /work/ibmint-output/ace-server --project ConsumeMQ --project DefaultPolicies --compile-maps-and-schemas 
+        ibmint optimize server --work-dir /work/ibmint-output/ace-server --disable NodeJS
       volumeMounts:
         - mountPath: /work
           name: work

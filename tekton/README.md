@@ -8,23 +8,36 @@ before, and can also be run using OpenShift (tested on 4.12).
 The tasks rely on several different containers:
 
 - The Tekton git-init image to run the initial git clones.
-- Kaniko for building the container images.
 - The ace-minimal image for a small Alpine-based runtime container (~420MB, which fits into the IBM 
-Cloud container registry free tier limit of 512MB), and builder variant with Maven added in.  See 
+Cloud container registry free tier limit of 512MB) with the MQ client installed..  See 
 https://github.com/trevor-dolby-at-ibm-com/ace-docker/tree/master/experimental/ace-minimal for more 
 details on the minimal image, and [minimal image build instructions](minimal-image-build/README.md)
 on how to build the various pre-req images.
 
-For the initial testing, variants of ace-minimal:12.0.7.0-alpine have been pushed to tdolby/experimental 
+For the initial testing, variants of ace-minimal:13.0.1.0-alpine-mqclient have been pushed to tdolby/experimental 
 on DockerHub, but this is not a stable location, and the images should be rebuilt by anyone attempting 
 to use this repo.
 
 ## Getting started
 
- Most of the specific registry names need to be customised: us.icr.io may not be the right region, for 
-example, and us.icr.io/ace-containers is unlikely to be writable. Creating registries and so on (though 
-essential) is beyond the scope of this document, but customisation of the artifacts in this repo (such 
-as ace-pipeline-run.yaml) will almost certainly be necessary.
+A Kubernetes cluster will be needed, with Minikube (see [minikube/README.md](/tekton/minikube/README.md)) and
+OpenShift 4.14 being the two most-tested. Other clusters should also work with appropriate adjustments to
+ingress routing and container registry settings. Note that the Cloud Pak for Integration (CP4i) has a separate
+pipeline the creates IntegrationRuntime CRs with custom images; see [os/cp4i/README.md](/tekton/os/cp4i/README.md)
+for more details.
+
+Many of the artifacts in this repo (such as ace-pipeline-run.yaml) will need to be customized depending on
+the exact cluster layout. The defaults are set up for Minikube running with Docker on Ubuntu, and may need
+to be modified depending on network addresses, etc. The most-commonly-modified files have options in the
+comments, with [ace-pipeline-run.yaml](ace-pipeline-run.yaml) being one example:
+```
+    - name: buildImage
+      # Requires an IBM Entitlement Key
+      #value: "cp.icr.io/cp/appc/ace:12.0.11.0-r1"
+      # ace-minimal can be built from the ACE package without needing a key
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+```
+
 
  The Tekton pipeline relies on docker credentials being provided for Kaniko to use when pushing 
 the built image, and these credentials must be associated with the service account for the pipeline. 
@@ -77,8 +90,9 @@ kubectl --namespace tekton-pipelines port-forward --address 0.0.0.0 svc/tekton-d
 
 ## OpenShift
 
-The majority of steps are the same, but the registry authentication is a little different; assuming 
-a session logged in as kubeadmin, it would look as follows:
+Tekton is not normally installed directly with OpenShift, and the Red Hat OpenShift Pipelines operator
+would be used instead. The majority of the other steps are the same, but the registry authentication is 
+a little different; assuming a session logged in as kubeadmin, it would look as follows:
 ```
 kubectl create secret docker-registry regcred --docker-server=image-registry.openshift-image-registry.svc.cluster.local:5000 --docker-username=kubeadmin --docker-password=$(oc whoami -t)
 ```
