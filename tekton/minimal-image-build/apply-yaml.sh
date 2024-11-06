@@ -13,8 +13,8 @@ kubectl apply -f ${YAMLDIR}/03-ace-mqclient-image-build-and-push-task.yaml
 kubectl apply -f ${YAMLDIR}/ace-minimal-image-pipeline.yaml
 
 set +x
-echo "Success; the pipeline can now be run after the *-run.yaml files are customized."
-echo "Use  ${YAMLDIR}/ace-minimal-image-pipeline-run.yaml to build  ace-minimal mqclient"
+echo "Success; the pipeline can now be run after ace-minimal-image-pipeline-run.yaml is customized."
+echo "Use ${YAMLDIR}/ace-minimal-image-pipeline-run.yaml to build ace-minimal mqclient"
 echo
 echo "Example command sequence to run the pipeline and show the Tekton logs:"
 echo
