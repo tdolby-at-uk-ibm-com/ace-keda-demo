@@ -63,43 +63,51 @@ spec:
         set -e # Fail on error - this must be done after the profile in case the container has the profile loaded already
 
         cd /work/ace-demo-pipeline
-        mkdir /work/ibmint-output
-        mqsicreateworkdir /work/ibmint-output/ace-server
+        mkdir -p /work/ibmint-output/home/aceuser
+        mqsicreateworkdir /work/ibmint-output/home/aceuser/ace-server
         # Using --compile-maps-and-schemas for 12.0.11 and later . . . 
-        ibmint deploy --input-path . --output-work-directory /work/ibmint-output/ace-server --project ConsumeMQ --project DefaultPolicies --compile-maps-and-schemas 
-        ibmint optimize server --work-dir /work/ibmint-output/ace-server --disable NodeJS
+        ibmint deploy --input-path . --output-work-directory /work/ibmint-output/home/aceuser/ace-server --project ConsumeMQ --project DefaultPolicies --compile-maps-and-schemas 
+        ibmint optimize server --work-dir /work/ibmint-output/home/aceuser/ace-server --disable NodeJS
       volumeMounts:
         - mountPath: /work
           name: work
     - name: next-stage-container-setup
-      image: $(params.dockerRegistry)/ace-minimal-build:12.0.7.0-alpine
+      image: $(params.buildImage)
       script: |
         #!/bin/bash
-        cd /work/maven-output
+        cd /work/maven-output/home/aceuser
         cp /work/ace-keda-demo/tekton/Dockerfile Dockerfile
       volumeMounts:
         - mountPath: /work
           name: work
     - name: docker-build-and-push
-      image: gcr.io/kaniko-project/executor:v0.16.0
-      # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
+      image: quay.io/buildah/stable:v1
+      #image: registry.redhat.io/rhel8/buildah:8.9-5
+      securityContext:
+        runAsUser: 0
+        # Needed for hostPath volumes on OpenShift
+        #privileged: true
+        capabilities:
+          add: ["CHOWN", "DAC_OVERRIDE","FOWNER","SETFCAP","SETGID","SETUID"]
+      # specifying DOCKER_CONFIG is required to allow buildah to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
           value: "/tekton/home/.docker/"
-      command:
-        - /kaniko/executor
-      args:
-        - --dockerfile=/work/maven-output/Dockerfile
-        - --destination=$(params.dockerRegistry)/ace-keda-demo
-        - --context=/work/maven-output
-        - --build-arg=BASE_IMAGE=$(params.dockerRegistry)/ace-minimal:12.0.7.0-alpine
-        - --skip-tls-verify
+      script: |
+        date
+        export TAG=`cat $(results.tag.path)`
+        echo Using $TAG as image tag
+        buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
+          --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
+          -f /work/maven-output/home/aceuser/Dockerfile \ 
+          -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/maven-output/home/aceuser
+        date
+        buildah  --storage-driver=overlay push --tls-verify=false --digestfile /tmp/image-digest \
+          $(params.outputRegistry)/ace-keda-demo:$TAG  "docker://$(params.outputRegistry)/ace-keda-demo:$TAG"
+        date
       volumeMounts:
         - mountPath: /work
           name: work
   volumes:
     - name: work
       emptyDir: {}
-    - name: secret-volume-2
-      secret:
-        secretName: mq-secret
