@@ -75,6 +75,7 @@ spec:
       script: |
         #!/bin/bash
         cd /work/ibmint-output/home/aceuser
+        cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh ace-server/ace-startup-script.sh
         cp /work/ace-keda-demo/tekton/Dockerfile Dockerfile
       volumeMounts:
         - mountPath: /work
