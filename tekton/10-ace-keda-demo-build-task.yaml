@@ -100,11 +100,11 @@ spec:
         date
         echo buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
           --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
-          -f /work/ibmint-output/home/aceuser/Dockerfile \ 
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
           -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
         buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
           --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
-          -f /work/ibmint-output/home/aceuser/Dockerfile \ 
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
           -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
         date
         buildah  --storage-driver=overlay push --tls-verify=false --digestfile /tmp/image-digest \
