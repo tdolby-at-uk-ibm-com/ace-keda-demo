@@ -30,10 +30,11 @@ spec:
       image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.18.1
       script: |
         #!/bin/sh
+        set -x
         set -e # Fail on error
         cd /work
         git clone -b $(params.revision) $(params.url)
-        cd ace-demo-pipeline
+        cd ace-keda-demo
         export DATE=$(date '+%Y%m%d%H%M%S')
         export COMMIT=$(git log -1 --pretty=%h)
         export TAG="$DATE"-"$COMMIT"
@@ -41,7 +42,7 @@ spec:
         echo -n "$TAG" > $(results.tag.path)
 
         # Slightly hacky but works . . . 
-        chmod -R 777 /work/ace-demo-pipeline
+        chmod -R 777 /work/ace-keda-demo
       volumeMounts:
         - mountPath: /work
           name: work
@@ -60,7 +61,7 @@ spec:
         
         set -e # Fail on error - this must be done after the profile in case the container has the profile loaded already
 
-        cd /work/ace-demo-pipeline
+        cd /work/ace-keda-demo
         mkdir -p /work/ibmint-output/home/aceuser
         mqsicreateworkdir /work/ibmint-output/home/aceuser/ace-server
         # Using --compile-maps-and-schemas for 12.0.11 and later . . . 
