@@ -61,8 +61,8 @@ kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
 
 Once that has been accomplished, the simplest way to run the pipeline is
 ```
-kubectl apply -f tekton/ace-keda-demo-pipeline-run.yaml
-tkn pipelinerun logs ace-keda-demo-pipeline-run-1 -f
+kubectl create -f tekton/ace-keda-demo-pipeline-run.yaml
+tkn pipelinerun logs -L -f
 ```
 
 and this should build the projects, run the unit tests, create a docker image, and then create a 

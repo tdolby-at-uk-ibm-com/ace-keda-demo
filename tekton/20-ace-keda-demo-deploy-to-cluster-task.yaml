@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: deploy-to-cluster
+  name: ace-keda-demo-deploy-to-cluster
 spec:
   params:
     - name: dockerRegistry
