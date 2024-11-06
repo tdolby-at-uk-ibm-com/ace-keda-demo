@@ -84,6 +84,7 @@ spec:
         tar -cvzf /work/crane-append-file.tar.gz home
 
         cd /work
+        unset LD_LIBRARY_PATH
         aria2c -o go-containerregistry_Linux_x86_64.tar.gz https://github.com/google/go-containerregistry/releases/download/v0.20.1/go-containerregistry_Linux_x86_64.tar.gz
         tar -xzvf go-containerregistry_Linux_x86_64.tar.gz
         chmod 775 /work/crane
