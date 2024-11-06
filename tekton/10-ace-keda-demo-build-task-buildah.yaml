@@ -74,23 +74,21 @@ spec:
       image: $(params.runtimeBaseImage)
       script: |
         #!/bin/bash
-        cd /work/ibmint-output
-        cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh home/aceuser/ace-server/ace-startup-script.sh
-        chmod -R 777 .
-        echo ========================================================================
-        echo Create tar file of server contents
-        echo ========================================================================
-        # Must have the full directory tree from / in the tar file
-        tar -cvzf /work/crane-append-file.tar.gz home
-
-        cd /work
-        curl --location -fs https://github.com/google/go-containerregistry/releases/download/v0.20.1/go-containerregistry_Linux_x86_64.tar.gz | tar -xzvf -
-        chmod 775 /work/crane
+        cd /work/ibmint-output/home/aceuser
+        cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh ace-server/ace-startup-script.sh
+        cp /work/ace-keda-demo/tekton/Dockerfile Dockerfile
       volumeMounts:
         - mountPath: /work
           name: work
-    - name: crane-push
-      image: $(params.runtimeBaseImage)
+    - name: docker-build-and-push
+      image: quay.io/buildah/stable:v1
+      #image: registry.redhat.io/rhel8/buildah:8.9-5
+      securityContext:
+        runAsUser: 0
+        # Needed for hostPath volumes on OpenShift
+        #privileged: true
+        capabilities:
+          add: ["CHOWN", "DAC_OVERRIDE","FOWNER","SETFCAP","SETGID","SETUID"]
       # specifying DOCKER_CONFIG is required to allow buildah to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
@@ -99,11 +97,19 @@ spec:
         date
         export TAG=`cat $(results.tag.path)`
         echo Using $TAG as image tag
-        
-        echo ========================================================================
-        echo Appending server contents tar file to create new image
-        echo ========================================================================
-        /work/crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
+        find /work
+        date
+        echo buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
+          --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
+          -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
+        buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
+          --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
+          -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
+        date
+        buildah  --storage-driver=overlay push --tls-verify=false --digestfile /tmp/image-digest \
+          $(params.outputRegistry)/ace-keda-demo:$TAG  "docker://$(params.outputRegistry)/ace-keda-demo:$TAG"
         date
       volumeMounts:
         - mountPath: /work
