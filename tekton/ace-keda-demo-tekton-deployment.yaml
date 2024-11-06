@@ -18,7 +18,7 @@ spec:
           secretName: mq-secret
       containers:
       - name: ace-keda-demo
-        image: DOCKER_REGISTRY/ace-keda-demo:latest
+        image: DOCKER_REGISTRY/ace-keda-demo:IMAGE_TAG
         imagePullPolicy: Always
         volumeMounts:
         - name: secret-volume-2

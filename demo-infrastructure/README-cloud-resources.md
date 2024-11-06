@@ -49,7 +49,7 @@ kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker
 Create an MQ instance via "Create resource" on the IBM Cloud dashboard; create a queue called `DEMO.QUEUE`, then
 create user credentials for a user called `keda` and add them to the Kubernetes cluster as "mq-secret" like this:
 ```
-kubectl create secret generic mq-secret --from-literal=USERID='keda' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31361'
+kubectl create secret generic mq-secret --from-literal=USERID='keda' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
 with the obvious password replacement.
 
