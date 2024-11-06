@@ -18,4 +18,4 @@ echo "Use ${YAMLDIR}/ace-minimal-image-pipeline-run.yaml to build ace-minimal mq
 echo
 echo "Example command sequence to run the pipeline and show the Tekton logs:"
 echo
-echo "kubectl create -f ${YAMLDIR}/ace-minimal-build-image-pipeline-run.yaml ; tkn pr logs -L -f"
+echo "kubectl create -f ${YAMLDIR}/ace-minimal-image-pipeline-run.yaml ; tkn pr logs -L -f"
