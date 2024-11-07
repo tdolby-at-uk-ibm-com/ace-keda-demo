@@ -11,22 +11,22 @@ spec:
   params:
     - name: outputRegistry
       # OpenShift
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default"
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default"
       #value: "quay.io/trevor_dolby"
       #value: "us.icr.io/ace-containers"
       #value: "aceDemoRegistry.azurecr.io"
       # Minikube
-      #value: "192.168.49.2:5000/default"
+      value: "192.168.49.2:5000/default"
     - name: buildImage
       # ace-minimal can be built from the ACE package without needing a key
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
       # Minikube      
-      #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
     - name: runtimeBaseImage
       # ace-minimal can be built from the ACE package without needing a key
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
       # Minikube
-      #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
     - name: url
       value: "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
     - name: revision
