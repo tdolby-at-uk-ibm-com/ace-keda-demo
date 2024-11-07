@@ -4,7 +4,7 @@
 # Licensed under the MIT license (see LICENSE for details)
 #
 
-echo "Pulling in secrets"
+echo "Starting init script and pulling in secrets"
 
 set +x
 
@@ -23,10 +23,11 @@ mqsisetdbparms -w /home/aceuser/ace-server -n mq::MQoC -u `cat /run/secrets/mq/U
 sed -i "s/#policyProject: 'DefaultPolicies'/policyProject: 'DefaultPolicies'/g" /home/aceuser/ace-server/server.conf.yaml
 sed -i "s/#remoteDefaultQueueManager: ''/remoteDefaultQueueManager: '{DefaultPolicies}:MQoC'/g" /home/aceuser/ace-server/server.conf.yaml
 
-
+echo 'Creating dummy KDB file - mqclient.ini has "CertificateValPolicy = NONE" so this works for non-production demos'
 # This only works because we have switched off TLS validation in mqclient.ini
 . /opt/mqm/bin/setmqenv -s
 mkdir /tmp/mq-keydb
 cd /tmp/mq-keydb
 runmqakm -keydb -create -db dummy-keystore.kdb -pw changeit -type cms -stash
 sed -i "s|#mqKeyRepository: ''|mqKeyRepository: '/tmp/mq-keydb/dummy-keystore'|g" /home/aceuser/ace-server/server.conf.yaml
+echo "Finished init script"
