@@ -76,6 +76,7 @@ spec:
         #!/bin/bash
         cd /work/ibmint-output
         cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh home/aceuser/ace-server/ace-startup-script.sh
+        cp /work/ace-keda-demo/demo-infrastructure/mqclient.ini home/aceuser/mqclient.ini
         chmod -R 777 .
         echo ========================================================================
         echo Create tar file of server contents
