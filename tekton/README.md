@@ -99,18 +99,32 @@ kubectl create secret docker-registry regcred --docker-server=image-registry.ope
 Note that the actual password itself (as opposed to the hash provided by "oc whoami -t") does not 
 work for registry authentication for some reason.
 
-After that, the pipeline run would be
+To run outside the default namespace, a special SecurityContextConstraints must be created and
+associated with the service account:
 ```
-kubectl apply -f tekton/os/ace-pipeline-run-crc.yaml
-tkn pipelinerun logs ace-pipeline-run-1 -f
+kubectl apply -f tekton/ace-scc.yaml
+oc adm policy add-scc-to-user ace-scc -z ace-tekton-service-account
 ```
-to pick up the correct registry default. The OpenShift Pipeline operator provides a web interface 
-for the pipeline runs also, which may be an easier way to view progress.
+Without this change, errors of the form
+```
+task build-images has failed: pods "ace-minimal-image-pipeline-run-db8lw-build-images-pod" is forbidden: unable to validate against any security context constraint: 
+```
+may prevent the pipeline running correctly.
+
+After that, the pipeline run files need to be adjusted to use the OpenShift registry, such 
+as [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml):
+```
+    - name: dockerRegistry
+      # OpenShift
+      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default"
+      #value: "quay.io/trevor_dolby"
+      #value: "us.icr.io/ace-containers"
+      #value: "aceDemoRegistry.azurecr.io"
+      # Minikube
+      #value: "192.168.49.2:5000/default"
+```
+and then the pipelines can be run as usual. The OpenShift Pipeline operator provides a 
+web interface for the pipeline runs also, which may be an easier way to view progress.
 
 ## Possible enhancements
 
-The pipeline should use a single git commit to ensure the two tasks are actually using the same 
-source. Alternatively, PVCs could be used to share a workspace between the tasks, which at the 
-moment use transient volumes to maintain state between the task steps but not between the tasks themselves.
-
-The remaining docker images, git repo references, etc could be turned into parameters.

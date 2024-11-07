@@ -88,6 +88,18 @@ kubectl create secret docker-registry regcred --docker-server=image-registry.ope
 Note that the actual password itself (as opposed to the hash provided by "oc whoami -t") does not work for
 registry authentication for some reason when using single-node OpenShift with a temporary admin user.
 
+To run outside the default namespace, a special SecurityContextConstraints must be created and
+associated with the service account:
+```
+kubectl apply -f tekton/ace-scc.yaml
+oc adm policy add-scc-to-user ace-scc -z ace-tekton-service-account
+```
+Without this change, errors of the form
+```
+task build-images has failed: pods "ace-minimal-image-pipeline-run-db8lw-build-images-pod" is forbidden: unable to validate against any security context constraint: 
+```
+may prevent the pipeline running correctly.
+
 After that, the pipeline run files need to be adjusted to use the OpenShift registry, such 
 as [ace-minimal-image-pipeline-run.yaml](ace-minimal-image-pipeline-run.yaml):
 ```
