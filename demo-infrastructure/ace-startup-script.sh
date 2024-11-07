@@ -23,4 +23,4 @@ mqsisetdbparms -w /home/aceuser/ace-server -n mq::MQoC -u `cat /run/secrets/mq/U
 sed -i "s/#policyProject: 'DefaultPolicies'/policyProject: 'DefaultPolicies'/g" /home/aceuser/ace-server/server.conf.yaml
 sed -i "s/#remoteDefaultQueueManager: ''/remoteDefaultQueueManager: '{DefaultPolicies}:MQoC'/g" /home/aceuser/ace-server/server.conf.yaml
 # This only works because we have switched off TLS validation in mqclient.ini
-sed -i "s/#mqKeyRepository: ''/mqKeyRepository: '/dev/null'/g" /home/aceuser/ace-server/server.conf.yaml
+sed -i "s/#mqKeyRepository: ''/mqKeyRepository: '\/dev\/null'/g" /home/aceuser/ace-server/server.conf.yaml
