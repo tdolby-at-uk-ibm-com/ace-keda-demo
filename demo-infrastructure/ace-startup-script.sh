@@ -29,4 +29,4 @@ sed -i "s/#remoteDefaultQueueManager: ''/remoteDefaultQueueManager: '{DefaultPol
 mkdir /tmp/mq-keydb
 cd /tmp/mq-keydb
 runmqakm -keydb -create -db dummy-keystore.kdb -pw changeit -type cms -stash
-sed -i "s/#mqKeyRepository: ''/mqKeyRepository: '\/tmp\/mq-keydb'/g" /home/aceuser/ace-server/server.conf.yaml
+sed -i "s|#mqKeyRepository: ''|mqKeyRepository: '/tmp/mq-keydb/dummy-keystore'|g" /home/aceuser/ace-server/server.conf.yaml
