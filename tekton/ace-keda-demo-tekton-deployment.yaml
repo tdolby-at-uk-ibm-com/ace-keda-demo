@@ -26,6 +26,9 @@ spec:
         - name: secret-volume-2
           mountPath: /var/run/secrets/mq
         env:
+        # Need this one to fix OpenShift userid randomization
+        - name: HOME
+          value: /home/aceuser
         - name: KEDA_MQ_USER
           valueFrom:
             secretKeyRef:
