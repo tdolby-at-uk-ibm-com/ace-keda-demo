@@ -12,7 +12,11 @@ WORKDIR /tmp/maven-output
 COPY ace-server /tmp/maven-output/ace-server/
 RUN chown -R aceuser:mqbrkrs /tmp/* && \
     (cd /tmp/maven-output/ace-server && tar -cf - * ) | ( cd /home/aceuser/ace-server && tar -xf - ) && \
-    chmod 775 /home/aceuser/ace-server/ace-startup-script.sh 
+    chmod 775 /home/aceuser/ace-server/ace-startup-script.sh && \ 
+    # Must be in $HOME for aceuser
+    cp mqclient.ini /home/aceuser/mqclient.ini && \
+    chmod 664 /home/aceuser/mqclient.ini
+
 
 # Kaniko seems to chmod this directory 755 by mistake sometimes, which causes trouble later
 RUN chmod 1777 /tmp

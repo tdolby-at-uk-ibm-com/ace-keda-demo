@@ -76,7 +76,10 @@ spec:
         #!/bin/bash
         cd /work/ibmint-output/home/aceuser
         cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh ace-server/ace-startup-script.sh
-        cp /work/ace-keda-demo/tekton/Dockerfile Dockerfile
+        cp /work/ace-keda-demo/tekton/old/Dockerfile Dockerfile
+        
+        # Must be in $HOME for aceuser
+        cp /work/ace-keda-demo/demo-infrastructure/mqclient.ini mqclient.ini
       volumeMounts:
         - mountPath: /work
           name: work
