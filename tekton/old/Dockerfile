@@ -22,6 +22,9 @@ RUN chown -R aceuser:mqbrkrs /tmp/* && \
 # Kaniko seems to chmod this directory 755 by mistake sometimes, which causes trouble later
 RUN chmod 1777 /tmp
 
+# This seems to be needed for OpenShift support due to random userids at runtime
+RUN chmod -R 777 /home/aceuser /var/mqsi || /bin/true
+
 USER aceuser
 ENV HOME=/home/aceuser
 

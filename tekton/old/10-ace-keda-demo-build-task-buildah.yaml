@@ -117,6 +117,13 @@ spec:
       volumeMounts:
         - mountPath: /work
           name: work
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
   volumes:
     - name: work
+      emptyDir: {}
+    # 
+    # Default buildah approach using emptyDir; takes about 40 seconds on a test SNO cluster
+    # 
+    - name: varlibcontainers
       emptyDir: {}
