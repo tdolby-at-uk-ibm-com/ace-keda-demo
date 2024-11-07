@@ -23,6 +23,7 @@ RUN chown -R aceuser:mqbrkrs /tmp/* && \
 RUN chmod 1777 /tmp
 
 USER aceuser
+ENV HOME=/home/aceuser
 
 # We're in an internal pipeline
 ENV LICENSE=accept
