@@ -2,7 +2,6 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: ace-keda-demo
-  namespace: default
   labels:
     deploymentName: ace-keda-demo
 spec:
@@ -24,7 +23,6 @@ apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
   name: ace-keda-demo-trigger
-  namespace: default
 spec:
   secretTargetRef:
     - parameter: username

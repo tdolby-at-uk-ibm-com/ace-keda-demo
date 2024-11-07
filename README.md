@@ -41,10 +41,12 @@ explaining how to create the IBM Cloud resources.
 ### Installing KEDA
 
 KEDA can be installed using the operator (most recent version tested is
-RedHat's Custom Metrics Autoscaler 2.7.1 on OpenShift 4.12) or via kubectl:
+RedHat's Custom Metrics Autoscaler 2.14.1 on OpenShift 4.16) or via kubectl:
 ```
-kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.9.2/keda-2.9.2.yaml
+kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
 ```
+(Note that `--server-side` is needed to avoid errors saying `The CustomResourceDefinition "scaledjobs.keda.sh" 
+is invalid: metadata.annotations: Too long: must have at most 262144 bytes`)
 
 Update the keda/secrets.yaml file to contain the correct MQ application and admin credentials
 (currently blank) for use by the KEDA scaler. This file then needs to be applied before 
