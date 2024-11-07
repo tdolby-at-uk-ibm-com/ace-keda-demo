@@ -9,12 +9,13 @@ LABEL "maintainer"="trevor.dolby@ibm.com"
 USER root
 WORKDIR /tmp/maven-output
 
+# Must be in $HOME for aceuser
+COPY mqclient.ini /home/aceuser/mqclient.ini
+
 COPY ace-server /tmp/maven-output/ace-server/
 RUN chown -R aceuser:mqbrkrs /tmp/* && \
     (cd /tmp/maven-output/ace-server && tar -cf - * ) | ( cd /home/aceuser/ace-server && tar -xf - ) && \
     chmod 775 /home/aceuser/ace-server/ace-startup-script.sh && \ 
-    # Must be in $HOME for aceuser
-    cp mqclient.ini /home/aceuser/mqclient.ini && \
     chmod 664 /home/aceuser/mqclient.ini
 
 
