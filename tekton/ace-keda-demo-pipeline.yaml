@@ -27,6 +27,8 @@ spec:
           value: $(params.url)
         - name: revision
           value: $(params.revision)
+        - name: buildImage
+          value: $(params.buildImage)
         - name: runtimeBaseImage
           value: $(params.runtimeBaseImage)
     - name: deploy-to-cluster

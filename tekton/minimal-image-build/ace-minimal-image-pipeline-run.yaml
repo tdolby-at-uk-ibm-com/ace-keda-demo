@@ -13,7 +13,7 @@ spec:
     name: ace-minimal-image-pipeline
   params:
     - name: dockerRegistry
-      # OpenShift - note that ace-keda should be changed to match the pipeline namespace
+      # OpenShift - note that ace-keda should match the pipeline namespace
       value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda"
       #value: "quay.io/trevor_dolby"
       #value: "us.icr.io/ace-containers"

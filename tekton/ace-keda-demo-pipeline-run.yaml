@@ -10,7 +10,7 @@ spec:
     name: ace-keda-demo-pipeline
   params:
     - name: outputRegistry
-      # OpenShift - note that ace-keda should be changed to match the pipeline namespace
+      # OpenShift - note that ace-keda should match the pipeline namespace
       value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda"
       #value: "quay.io/trevor_dolby"
       #value: "us.icr.io/ace-containers"
@@ -19,12 +19,14 @@ spec:
       #value: "192.168.49.2:5000/default"
     - name: buildImage
       # ace-minimal can be built from the ACE package without needing a key
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
-      # Minikube      
+      # OpenShift - note that ace-keda should match the pipeline namespace
+      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient"
+      #value: "quay.io/trevor_dolby/ace-minimal:13.0.1.0-alpine-mqclient"
+      # Minikube
       #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
     - name: runtimeBaseImage
       # ace-minimal can be built from the ACE package without needing a key
-      # OpenShift - note that ace-keda should be changed to match the pipeline namespace
+      # OpenShift - note that ace-keda should match the pipeline namespace
       value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient"
       #value: "quay.io/trevor_dolby/ace-minimal:13.0.1.0-alpine-mqclient"
       # Minikube
