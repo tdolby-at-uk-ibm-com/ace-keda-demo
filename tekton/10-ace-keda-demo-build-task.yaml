@@ -93,6 +93,21 @@ spec:
       volumeMounts:
         - mountPath: /work
           name: work
+    - name: crane-append
+      image: gcr.io/go-containerregistry/crane:v0.15.2
+      command:
+        - /ko-app/crane
+      args:
+        - append 
+        - -b
+        - $(params.runtimeBaseImage) 
+        - -f 
+        - /work/crane-append-file.tar.gz 
+        - -t
+        - $(params.outputRegistry)/ace-keda-demo:$(results.tag)
+      volumeMounts:
+        - mountPath: /work
+          name: work
     - name: crane-push
       image: gcr.io/go-containerregistry/crane:debug
       # specifying DOCKER_CONFIG is required to allow crane to detect docker credential
@@ -108,7 +123,7 @@ spec:
         echo ========================================================================
         echo Appending server contents tar file to create new image
         echo ========================================================================
-        crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
+        #crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
         crane mutate --env "LICENSE=accept" --entrypoint='bash,-c,"/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server"' $(params.outputRegistry)/ace-keda-demo:$TAG
         date
       volumeMounts:

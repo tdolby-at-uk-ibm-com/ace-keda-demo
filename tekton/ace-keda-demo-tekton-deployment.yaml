@@ -16,8 +16,9 @@ spec:
       - name: secret-volume-2
         secret:
           secretName: mq-secret
-      imagePullSecrets:
-      - name: regcred
+      # Comment out if using OpenShift registry
+      #imagePullSecrets:
+      #- name: regcred
       containers:
       - name: ace-keda-demo
         image: DOCKER_REGISTRY/ace-keda-demo:IMAGE_TAG
@@ -29,6 +30,8 @@ spec:
         # Need this one to fix OpenShift userid randomization
         - name: HOME
           value: /home/aceuser
+        - name: LICENSE
+          value: accept
         - name: KEDA_MQ_USER
           valueFrom:
             secretKeyRef:
