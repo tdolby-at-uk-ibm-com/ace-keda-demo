@@ -26,18 +26,19 @@ ingress routing and container registry settings. Note that the Cloud Pak for Int
 pipeline the creates IntegrationRuntime CRs with custom images; see [os/cp4i/README.md](/tekton/os/cp4i/README.md)
 for more details.
 
-Many of the artifacts in this repo (such as ace-pipeline-run.yaml) will need to be customized depending on
+Many of the artifacts in this repo (such as ace-keda-demo-pipeline-run.yaml) will need to be customized depending on
 the exact cluster layout. The defaults are set up for Minikube running with Docker on Ubuntu, and may need
 to be modified depending on network addresses, etc. The most-commonly-modified files have options in the
-comments, with [ace-pipeline-run.yaml](ace-pipeline-run.yaml) being one example:
+comments, with [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml) being one example:
 ```
     - name: buildImage
-      # Requires an IBM Entitlement Key
-      #value: "cp.icr.io/cp/appc/ace:12.0.11.0-r1"
       # ace-minimal can be built from the ACE package without needing a key
-      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      # OpenShift - note that ace-keda should match the pipeline namespace
+      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient"
+      #value: "quay.io/trevor_dolby/ace-minimal:13.0.1.0-alpine-mqclient"
+      # Minikube
+      #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
 ```
-
 
  The Tekton pipeline relies on docker credentials being provided for Kaniko to use when pushing 
 the built image, and these credentials must be associated with the service account for the pipeline. 
@@ -45,6 +46,7 @@ If this has not already been done elsewhere, then create as follows, with approp
 fork of this repo:
 ```
 kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker-username=iamapikey --docker-password=<your-api-key>
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 kubectl apply -f tekton/service-account.yaml
 ```
 The service account also has the ability to create services, deployments, etc, which are necessary 
@@ -92,12 +94,10 @@ kubectl --namespace tekton-pipelines port-forward --address 0.0.0.0 svc/tekton-d
 
 Tekton is not normally installed directly with OpenShift, and the Red Hat OpenShift Pipelines operator
 would be used instead. The majority of the other steps are the same, but the registry authentication is 
-a little different; assuming a session logged in as kubeadmin, it would look as follows:
-```
-kubectl create secret docker-registry regcred --docker-server=image-registry.openshift-image-registry.svc.cluster.local:5000 --docker-username=kubeadmin --docker-password=$(oc whoami -t)
-```
-Note that the actual password itself (as opposed to the hash provided by "oc whoami -t") does not 
-work for registry authentication for some reason.
+a little different: the namespace in which the pipeline and pod are running must match the project
+name in the image registry tags. The examples show 
+`image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient`,
+which will work for the `ace-keda` namespace.
 
 To run outside the default namespace, a special SecurityContextConstraints must be created and
 associated with the service account:
@@ -114,14 +114,14 @@ may prevent the pipeline running correctly.
 After that, the pipeline run files need to be adjusted to use the OpenShift registry, such 
 as [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml):
 ```
-    - name: dockerRegistry
-      # OpenShift
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/default"
+    - name: outputRegistry
+      # OpenShift - note that ace-keda should match the pipeline namespace
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda"
       #value: "quay.io/trevor_dolby"
       #value: "us.icr.io/ace-containers"
       #value: "aceDemoRegistry.azurecr.io"
       # Minikube
-      #value: "192.168.49.2:5000/default"
+      value: "192.168.49.2:5000/default"
 ```
 and then the pipelines can be run as usual. The OpenShift Pipeline operator provides a 
 web interface for the pipeline runs also, which may be an easier way to view progress.

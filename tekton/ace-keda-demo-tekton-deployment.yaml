@@ -16,7 +16,8 @@ spec:
       - name: secret-volume-2
         secret:
           secretName: mq-secret
-      # Comment out if using OpenShift registry
+      # This is now handled via the "default" service account
+      # kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
       #imagePullSecrets:
       #- name: regcred
       containers:

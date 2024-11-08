@@ -2,13 +2,13 @@
 <policies>
   <policy policyType="MQEndpoint" policyName="MQoC" policyTemplate="MQEndpoint">
     <connection>CLIENT</connection>
-    <destinationQueueManagerName>QUICKSTART</destinationQueueManagerName>
+    <destinationQueueManagerName>MQoC</destinationQueueManagerName>
     <queueManagerHostname>HOSTNAME</queueManagerHostname>
     <listenerPortNumber>00000</listenerPortNumber>
     <channelName>CLOUD.APP.SVRCONN</channelName>
     <CCDTUrl></CCDTUrl>
     <securityIdentity>MQoC</securityIdentity>
-    <useSSL>false</useSSL>
+    <useSSL>true</useSSL>
     <SSLPeerName></SSLPeerName>
     <SSLCipherSpec>ANY_TLS12_OR_HIGHER</SSLCipherSpec>
     <SSLCertificateLabel></SSLCertificateLabel>
