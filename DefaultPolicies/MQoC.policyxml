@@ -8,7 +8,7 @@
     <channelName>CLOUD.APP.SVRCONN</channelName>
     <CCDTUrl></CCDTUrl>
     <securityIdentity>MQoC</securityIdentity>
-    <useSSL>true</useSSL>
+    <useSSL>false</useSSL>
     <SSLPeerName></SSLPeerName>
     <SSLCipherSpec>ANY_TLS12_OR_HIGHER</SSLCipherSpec>
     <SSLCertificateLabel></SSLCertificateLabel>

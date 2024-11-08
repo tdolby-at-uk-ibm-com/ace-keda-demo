@@ -56,6 +56,11 @@ the app container is created, and the mq-secret must be create to allow the cont
 kubectl apply -f keda/secrets.yaml
 kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
+### MQ in a container
+
+```
+ curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
+ ```
 
 ### Building the ACE app
 

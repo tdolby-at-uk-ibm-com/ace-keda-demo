@@ -13,9 +13,12 @@ spec:
   triggers:
     - type: ibmmq
       metadata:
-        host: 'https://web-mqoc-fd48.qm.us-south.mq.appdomain.cloud/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
-        queueManager: 'MQoC' # Your queue manager
+        #host: 'https://web-mqoc-fd48.qm.us-south.mq.appdomain.cloud/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
+        host: 'https://qm-dev-ibm-mq.ace-keda.svc.cluster.local:9443/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
+        #queueManager: 'MQoC' # Your queue manager
+        queueManager: 'QUICKSTART' # Your queue manager
         queueName: 'DEMO.QUEUE' # Your queue name
+        unsafeSsl: 'true' 
       authenticationRef:
         name: ace-keda-demo-trigger
 ---
