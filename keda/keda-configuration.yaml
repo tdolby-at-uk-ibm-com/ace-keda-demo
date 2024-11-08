@@ -14,11 +14,11 @@ spec:
     - type: ibmmq
       metadata:
         #host: 'https://web-mqoc-fd48.qm.us-south.mq.appdomain.cloud/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
-        host: 'https://qm-dev-ibm-mq.ace-keda.svc.cluster.local:9443/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
+        host: 'https://proxy.host/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc'
         #queueManager: 'MQoC' # Your queue manager
         queueManager: 'QUICKSTART' # Your queue manager
         queueName: 'DEMO.QUEUE' # Your queue name
-        unsafeSsl: 'true' 
+        unsafeSsl: "false"
       authenticationRef:
         name: ace-keda-demo-trigger
 ---

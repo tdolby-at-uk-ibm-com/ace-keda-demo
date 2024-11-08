@@ -58,6 +58,15 @@ kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-
 ```
 ### MQ in a container
 
+TLS essential for both MQ channels and HTTPS
+
+IBM MQ
+3.3.0 provided by IBM
+
+
+Name:        IBM MQ
+Version:     9.4.0.6
+
 ```
  curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
  ```

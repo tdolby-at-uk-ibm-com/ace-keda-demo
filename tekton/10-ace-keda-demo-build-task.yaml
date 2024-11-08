@@ -96,7 +96,7 @@ spec:
         - mountPath: /work
           name: work
     - name: crane-push
-      image: $(params.runtimeBaseImage)
+      image: registry.redhat.io/openshift4/ose-cli
       # specifying DOCKER_CONFIG is required to allow buildah to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
@@ -109,6 +109,11 @@ spec:
         echo ========================================================================
         echo Appending server contents tar file to create new image
         echo ========================================================================
+        #set -x
+        #export SA_TOKEN=$(oc create token ace-tekton-service-account)
+        #echo $SA_TOKEN
+        #export HOME=/tmp
+        #/work/crane auth login image-registry.openshift-image-registry.svc.cluster.local:5000 -u ace-tekton-service-account -p $SA_TOKEN
         /work/crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
         /work/crane mutate --env "LICENSE=accept" --entrypoint='bash,-c,"/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server"' $(params.outputRegistry)/ace-keda-demo:$TAG
         date
