@@ -69,6 +69,8 @@ spec:
         # Using --compile-maps-and-schemas for 12.0.11 and later . . . 
         ibmint deploy --input-path . --output-work-directory /work/ibmint-output/home/aceuser/ace-server --project ConsumeMQ --project DefaultPolicies --compile-maps-and-schemas 
         ibmint optimize server --work-dir /work/ibmint-output/home/aceuser/ace-server --disable NodeJS
+
+        # Unit tests would normally be run here, but the flow is just MQ->Trace and so there's not much to test!
       volumeMounts:
         - mountPath: /work
           name: work
