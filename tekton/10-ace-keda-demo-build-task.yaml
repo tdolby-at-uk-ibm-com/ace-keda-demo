@@ -86,22 +86,17 @@ spec:
         echo ========================================================================
         # Must have the full directory tree from / in the tar file
         tar -cvzf /work/crane-append-file.tar.gz home
-
-        cd /work
-        unset LD_LIBRARY_PATH
-        aria2c -o go-containerregistry_Linux_x86_64.tar.gz https://github.com/google/go-containerregistry/releases/download/v0.20.1/go-containerregistry_Linux_x86_64.tar.gz
-        tar -xzvf go-containerregistry_Linux_x86_64.tar.gz
-        chmod 775 /work/crane
       volumeMounts:
         - mountPath: /work
           name: work
     - name: crane-push
-      image: registry.redhat.io/openshift4/ose-cli
-      # specifying DOCKER_CONFIG is required to allow buildah to detect docker credential
+      image: gcr.io/go-containerregistry/crane:debug
+      # specifying DOCKER_CONFIG is required to allow crane to detect docker credential
       env:
         - name: "DOCKER_CONFIG"
           value: "/tekton/home/.docker/"
       script: |
+        #!/busybox/sh
         date
         export TAG=`cat $(results.tag.path)`
         echo Using $TAG as image tag
@@ -109,13 +104,8 @@ spec:
         echo ========================================================================
         echo Appending server contents tar file to create new image
         echo ========================================================================
-        #set -x
-        #export SA_TOKEN=$(oc create token ace-tekton-service-account)
-        #echo $SA_TOKEN
-        #export HOME=/tmp
-        #/work/crane auth login image-registry.openshift-image-registry.svc.cluster.local:5000 -u ace-tekton-service-account -p $SA_TOKEN
-        /work/crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
-        /work/crane mutate --env "LICENSE=accept" --entrypoint='bash,-c,"/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server"' $(params.outputRegistry)/ace-keda-demo:$TAG
+        crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
+        crane mutate --env "LICENSE=accept" --entrypoint='bash,-c,"/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server"' $(params.outputRegistry)/ace-keda-demo:$TAG
         date
       volumeMounts:
         - mountPath: /work
