@@ -1,0 +1,104 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.17 Chrome/128.0.6613.36 Electron/32.0.1 Safari/537.36" version="24.7.17">
+  <diagram name="Page-1" id="C0pqFvtej9mzMAWdVneW">
+    <mxGraphModel dx="1221" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-hnQsiJzklWKLKV5hgJx-30" value="PUT messages via SVRCONN channel" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="420" y="330" width="136" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-1" value="mqkeda/sample-app" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f9f7ed;strokeColor=#36393d;fontSize=20;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="200" y="304" width="210" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-2" value="&lt;div style=&quot;font-size: 18px;&quot;&gt;ibmmq-producer&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;fontSize=18;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-1">
+          <mxGeometry x="20" y="41" width="170" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-19" value="MQ on Cloud&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="610" y="290" width="280" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-20" value="ACE Deployment" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f9f7ed;strokeColor=#36393d;fontSize=18;startSize=30;" vertex="1" parent="1">
+          <mxGeometry x="200" y="470" width="230" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-31" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;ACE Server&lt;/font&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="50" y="70" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-32" value="MQ flow" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=process;whiteSpace=wrap;rounded=1;size=0.14;arcSize=6;labelPosition=center;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="60" y="105" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-29" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;ACE Server&lt;/font&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="40" y="60" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-30" value="MQ flow" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=process;whiteSpace=wrap;rounded=1;size=0.14;arcSize=6;labelPosition=center;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="50" y="95" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-25" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;ACE Server&lt;/font&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 18px;&quot;&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=middle;align=center;verticalAlign=middle;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="30" y="50" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-26" value="MQ flow" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=process;whiteSpace=wrap;rounded=1;size=0.14;arcSize=6;labelPosition=center;align=center;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=18;" vertex="1" parent="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry x="40" y="85" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-47" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Ln4z_vQVc0nFOdkqBioS-27">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="537.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-27" value="ace-keda-demo&lt;div&gt;source repo&lt;/div&gt;" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.github;fontSize=18;fontStyle=0" vertex="1" parent="1">
+          <mxGeometry x="50" y="500" width="75" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="Ln4z_vQVc0nFOdkqBioS-36" target="Ln4z_vQVc0nFOdkqBioS-26">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="422" />
+              <mxPoint x="480" y="575" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-36" value="" style="shape=partialRectangle;whiteSpace=wrap;html=1;bottom=1;right=1;left=1;top=0;fillColor=none;routingCenterX=-0.5;strokeWidth=3;" vertex="1" parent="1">
+          <mxGeometry x="740" y="384" width="40" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-37" value="" style="line;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="394" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-38" value="" style="line;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="404" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-39" value="" style="line;strokeWidth=2;html=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="414" width="20" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-40" value="DEMO.QUEUE" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="710" y="440" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;strokeWidth=3;" edge="1" parent="1" source="Ln4z_vQVc0nFOdkqBioS-2" target="Ln4z_vQVc0nFOdkqBioS-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-44" value="GET messages via SVRCONN channel" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="474" y="490" width="136" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-46" value="&lt;b&gt;&lt;font color=&quot;#000000&quot;&gt;KEDA Controller&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;/font&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=19;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;fillColor=#2C2D42;strokeColor=#314354;fontColor=#ffffff;gradientColor=#419ECF;gradientDirection=south;" vertex="1" parent="1">
+          <mxGeometry x="610" y="555" width="350" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#dae8fc;strokeColor=#6c8ebf;gradientColor=#7ea6e0;" edge="1" parent="1" source="Ln4z_vQVc0nFOdkqBioS-48" target="Ln4z_vQVc0nFOdkqBioS-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-48" value="Set replica count" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#eeeeee;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="630" y="575" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-50" value="MQ queue depth polling" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#eeeeee;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="787" y="575" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-54" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;strokeWidth=2;startArrow=none;startFill=0;endFill=1;entryX=1.094;entryY=0.633;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="Ln4z_vQVc0nFOdkqBioS-50" target="Ln4z_vQVc0nFOdkqBioS-36">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="866.55" y="539" as="sourcePoint" />
+            <mxPoint x="799.9983632778924" y="414.00321515063615" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="862" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Ln4z_vQVc0nFOdkqBioS-55" value="Query depth via REST API" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="100" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -14,7 +14,7 @@ The original MQ KEDA demo used a pair of MQ applications in separate containers,
 the other getting MQ messages, and in this demo ACE replaces the consumer container, with the rest being
 similar from a Keda point of view:
 
-![Demo overview](keda/ace-keda-demo-picture.png)
+![Demo overview](demo-infrastructure/images/ace-keda-runtime.drawio.png)
 
 Tekton is used to build and deploy the ACE application container, while either the IBM MQ producer container
 or another MQ client (including the "Create" button on a queue in the MQ on Cloud UI) are used to provide
