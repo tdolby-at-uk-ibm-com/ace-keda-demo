@@ -2,7 +2,6 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: ace-keda-demo
-  namespace: default
   labels:
     deploymentName: ace-keda-demo
 spec:
@@ -15,8 +14,10 @@ spec:
     - type: ibmmq
       metadata:
         host: 'https://web-mqoc-fd48.qm.us-south.mq.appdomain.cloud/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
+        #host: 'https://proxy.host/ibmmq/rest/v3/admin/action/qmgr/MQoC/mqsc'
         queueManager: 'MQoC' # Your queue manager
         queueName: 'DEMO.QUEUE' # Your queue name
+        unsafeSsl: "false"
       authenticationRef:
         name: ace-keda-demo-trigger
 ---
@@ -24,7 +25,6 @@ apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
   name: ace-keda-demo-trigger
-  namespace: default
 spec:
   secretTargetRef:
     - parameter: username

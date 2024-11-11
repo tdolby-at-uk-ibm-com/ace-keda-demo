@@ -6,6 +6,12 @@ spec:
   params:
     - name: dockerRegistry
       type: string
+    - name: url
+      type: string
+    - name: revision
+      type: string
+    - name: tag
+      type: string
   steps:
     - name: clone
       image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.18.1
@@ -13,10 +19,13 @@ spec:
         #!/bin/sh
         set -x
         cd /work
-        git clone "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
+        git clone -b $(params.revision) $(params.url)
         export REG_WITH_ESCAPED_SLASH=`echo $(params.dockerRegistry) | sed 's/\//\\\\\\//g'`
         echo $REG_WITH_ESCAPED_SLASH
         sed -i "s/DOCKER_REGISTRY/$REG_WITH_ESCAPED_SLASH/g" /work/ace-keda-demo/tekton/ace-keda-demo-tekton-deployment.yaml
+        export TAG=$(params.tag)
+        echo Using $TAG as image tag
+        sed -i "s/IMAGE_TAG/$TAG/g" /work/ace-keda-demo/tekton/*.yaml
         cat /work/ace-keda-demo/tekton/ace-keda-demo-tekton-deployment.yaml
       volumeMounts:
         - mountPath: /work

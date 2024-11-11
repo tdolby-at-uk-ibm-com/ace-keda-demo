@@ -16,14 +16,23 @@ spec:
       - name: secret-volume-2
         secret:
           secretName: mq-secret
+      # This is now handled via the "default" service account
+      # kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+      #imagePullSecrets:
+      #- name: regcred
       containers:
       - name: ace-keda-demo
-        image: DOCKER_REGISTRY/ace-keda-demo:latest
+        image: DOCKER_REGISTRY/ace-keda-demo:IMAGE_TAG
         imagePullPolicy: Always
         volumeMounts:
         - name: secret-volume-2
           mountPath: /var/run/secrets/mq
         env:
+        # Need this one to fix OpenShift userid randomization
+        - name: HOME
+          value: /home/aceuser
+        - name: LICENSE
+          value: accept
         - name: KEDA_MQ_USER
           valueFrom:
             secretKeyRef:

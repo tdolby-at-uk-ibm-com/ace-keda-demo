@@ -44,10 +44,11 @@ spec:
           - name: QUEUE_NAME
             value: 'DEMO.QUEUE' # Your queue name
           - name: HOST
-            value: 'mqoc-419f.qm.eu-gb.mq.appdomain.cloud' # Your hostname
+            value: 'mqoc-fd48.qm.us-south.mq.appdomain.cloud' # Your hostname
           - name: PORT
-            value: '31175' # Your port number
+            value: '31247' # Your port number
           - name: CHANNEL
+            # This channel should not be using TLS 
             value: 'CLOUD.APP.SVRCONN' # Your channel name
           - name: TOPIC_NAME
             value: 'dev/' # Your topic name

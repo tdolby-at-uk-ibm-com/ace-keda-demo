@@ -14,15 +14,17 @@ The original MQ KEDA demo used a pair of MQ applications in separate containers,
 the other getting MQ messages, and in this demo ACE replaces the consumer container, with the rest being
 similar from a Keda point of view:
 
-![Demo overview](keda/ace-keda-demo-picture.png)
+![Demo overview](demo-infrastructure/images/ace-keda-runtime.png)
 
 Tekton is used to build and deploy the ACE application container, while either the IBM MQ producer container
 or another MQ client (including the "Create" button on a queue in the MQ on Cloud UI) are used to provide
 messages. KEDA is configured to monitor the queue depth of the MQ on Cloud queue (DEMO.QUEUE in this case)
 and scale the ACE consumer container appropriately.
 
-The application containers use the ace-minimal image built using instructions (and Tekton build
-artifacts) from https://github.com/ot4i/ace-demo-pipeline/tree/master/tekton/minimal-image-build
+The application containers use the ace-minimal-mqclient image built from 
+https://github.com/trevor-dolby-at-ibm-com/ace-docker/blob/main/experimental/README.md but KEDA can 
+also control CP4i ACE containers via the IntegrationRuntime (see below for details).
+
 
 ## Application description
 
@@ -33,36 +35,58 @@ The application reads messages from the queue and prints them to the server cons
 
 ## Building and running the demo
 
-A Kubernetes cluster is needed along with a container registry and an MQ queue manager. These
-can all be provisioned free of charge in the IBM Cloud, or existing infrastructure can be used.
-See [README-cloud-resources.md](demo-infrastructure/README-cloud-resources.md) for instructions
-explaining how to create the IBM Cloud resources.
+A Kubernetes cluster is needed along with a container registry and an MQ queue manager.
+[Minikube](https://minikube.sigs.k8s.io/docs/) (easily installed locally) and OpenShift 
+can be used to provide the cluster and registry (external registries can also be used), while
+MQ on Cloud can be provisioned free of charge in the IBM Cloud, or existing infrastructure 
+can be used. See [README-cloud-resources.md](demo-infrastructure/README-cloud-resources.md) 
+for instructions explaining how to create the IBM Cloud resources.
 
 ### Installing KEDA
 
 KEDA can be installed using the operator (most recent version tested is
-RedHat's Custom Metrics Autoscaler 2.7.1 on OpenShift 4.12) or via kubectl:
+RedHat's Custom Metrics Autoscaler 2.14.1 on OpenShift 4.16) or via kubectl:
 ```
-kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.9.2/keda-2.9.2.yaml
+kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
 ```
+(Note that `--server-side` is needed to avoid errors saying `The CustomResourceDefinition "scaledjobs.keda.sh" 
+is invalid: metadata.annotations: Too long: must have at most 262144 bytes`)
 
-Update the keda/secrets.yaml file to contain the correct MQ application and admin credentials
+Update the [keda/secrets.yaml](keda/secrets.yaml) file to contain the correct MQ application and admin credentials
 (currently blank) for use by the KEDA scaler. This file then needs to be applied before 
 the app container is created, and the mq-secret must be create to allow the container to run:
 
 ```
 kubectl apply -f keda/secrets.yaml
-kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31361'
+kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
+
+### TLS and MQ
+
+MQ on Cloud is an easy way to experiment with KEDA, but MQ in containers now supports the use of 
+the MQ REST API and KEDA can poll the queue depth in the same way it does with MQ on Cloud. Setting 
+up TLS can be challenging unless the queue manager REST API uses a certificate issued by a 
+well-known CA; testing has been completed using version 3.3.0 of the MQ operator with MQ 9.4.0.6.
+
+TLS connectivity can be checked with curl as follows:
+```
+ curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
+ ```
+
+The ACE application container is configured to avoid MQ certificate validation (see 
+[demo-infrastructure/mqclient.ini](/demo-infrastructure/mqclient.ini)) and also to send 
+the hostname as the SNI data when connecting; while avoiding validation is not recommended
+for production, this repo is intended to show how to use ACE with KEDA and so TLS setup
+is less critical.
 
 ### Building the ACE app
 
 See the [tekton README](tekton/README.md) for build instructions, including building the
-ace-minimal containers.
+ace-minimal-mqclient containers.
 
-Once the build has succeeded, modify keda/keda-configuration.yaml to contain the correct
-credentials and communication paremeters, and then apply the file to enable scaling for
-the ace-keda-demo container:
+Once the build has succeeded and the application is receiving messages as expected, modify
+[keda/keda-configuration.yaml](keda/keda-configuration.yaml) to contain the correct credentials 
+and communication paremeters, and then apply the file to enable scaling for the ace-keda-demo container:
 ```
 kubectl apply -f keda/keda-configuration.yaml
 ```
@@ -87,31 +111,31 @@ keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   7/2 (avg)           1       
 ## Cloud Pak for Integration (CP4i) ACE operator
 
 KEDA assumes that it is scaling Kubernetes Deployments, but this approach will not work when
-scaling servers managed by the ACE operator using IntegrationServer or IntegrationRuntime
+scaling servers managed by the ACE operator using IntegrationRuntime or IntegrationServer
 custom resources (CRs). Although KEDA can change the number of replicas in the Deployment, 
 the operator will be trying to ensure the Deployment for the server matches the CR, and so
 it will change the replica setting back to the CR-provided value.
 
-The solution is to scale the CR itself rather than the Deployment. Both IntegrationServer and
-IntegrationRuntime provide the correct interfaces to enable KEDA to set the number of replicas,
+The solution is to scale the CR itself rather than the Deployment. Both IntegrationRuntime and
+IntegrationServer provide the correct interfaces to enable KEDA to set the number of replicas,
 and the only change required is to the `scaleTargetRef` in the KEDA configuration. Instead of
 ```
   scaleTargetRef:
     name: ace-keda-demo
 ```
-the CR can be specified instead, as follows for an IntegrationServer:
-```
-  scaleTargetRef:
-    apiVersion: appconnect.ibm.com/v1beta1
-    kind: IntegrationServer
-    name: is-01-consumemq
-```
-and for IntegrationRuntime CRs:
+the CR can be specified instead, as follows for IntegrationRuntimes:
 ```
   scaleTargetRef:
     apiVersion: appconnect.ibm.com/v1beta1
     kind: IntegrationRuntime
     name: ir-01-quickstart
+```
+and for IntegrationServer CRs:
+```
+  scaleTargetRef:
+    apiVersion: appconnect.ibm.com/v1beta1
+    kind: IntegrationServer
+    name: is-01-consumemq
 ```
 
 ## Common errors

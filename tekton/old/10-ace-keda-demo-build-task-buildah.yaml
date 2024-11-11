@@ -69,8 +69,6 @@ spec:
         # Using --compile-maps-and-schemas for 12.0.11 and later . . . 
         ibmint deploy --input-path . --output-work-directory /work/ibmint-output/home/aceuser/ace-server --project ConsumeMQ --project DefaultPolicies --compile-maps-and-schemas 
         ibmint optimize server --work-dir /work/ibmint-output/home/aceuser/ace-server --disable NodeJS
-
-        # Unit tests would normally be run here, but the flow is just MQ->Trace and so there's not much to test!
       volumeMounts:
         - mountPath: /work
           name: work
@@ -78,38 +76,56 @@ spec:
       image: $(params.buildImage)
       script: |
         #!/bin/bash
-        cd /work/ibmint-output
-        cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh home/aceuser/ace-server/ace-startup-script.sh
-        # Must be in $HOME for aceuser
-        cp /work/ace-keda-demo/demo-infrastructure/mqclient.ini home/aceuser/mqclient.ini
+        cd /work/ibmint-output/home/aceuser
+        cp /work/ace-keda-demo/demo-infrastructure/ace-startup-script.sh ace-server/ace-startup-script.sh
+        cp /work/ace-keda-demo/tekton/old/Dockerfile Dockerfile
         
-        # This seems to be needed for OpenShift support due to random userids at runtime
-        chmod -R 777 .
-        echo ========================================================================
-        echo Create tar file of server contents
-        echo ========================================================================
-        # Must have the full directory tree from / in the tar file
-        tar -cvzf /work/crane-append-file.tar.gz home
+        # Must be in $HOME for aceuser
+        cp /work/ace-keda-demo/demo-infrastructure/mqclient.ini mqclient.ini
       volumeMounts:
         - mountPath: /work
           name: work
-    - name: crane-push
-      image: ghcr.io/shortbrain/golang-tasks/crane@sha256:5d2dea205584b1f172cd9f0e68d00df0fbaeabd75894be475af42f092a47ee39
+    - name: docker-build-and-push
+      image: quay.io/buildah/stable:v1
+      #image: registry.redhat.io/rhel8/buildah:8.9-5
+      securityContext:
+        runAsUser: 0
+        # Needed for hostPath volumes on OpenShift
+        #privileged: true
+        capabilities:
+          add: ["CHOWN", "DAC_OVERRIDE","FOWNER","SETFCAP","SETGID","SETUID"]
+      # specifying DOCKER_CONFIG is required to allow buildah to detect docker credential
+      env:
+        - name: "DOCKER_CONFIG"
+          value: "/tekton/home/.docker/"
       script: |
-        #!/bin/bash
         date
         export TAG=`cat $(results.tag.path)`
         echo Using $TAG as image tag
-        
-        echo ========================================================================
-        echo Appending server contents tar file to create new image
-        echo ========================================================================
-        crane append -b $(params.runtimeBaseImage) -f /work/crane-append-file.tar.gz -t $(params.outputRegistry)/ace-keda-demo:$TAG
-        crane mutate --env "LICENSE=accept" --entrypoint='bash,-c,"/home/aceuser/ace-server/ace-startup-script.sh && IntegrationServer -w /home/aceuser/ace-server"' $(params.outputRegistry)/ace-keda-demo:$TAG
+        find /work
+        date
+        echo buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
+          --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
+          -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
+        buildah --storage-driver=overlay bud --format=oci --tls-verify=false --no-cache \
+          --build-arg BASE_IMAGE=$(params.runtimeBaseImage) \
+          -f /work/ibmint-output/home/aceuser/Dockerfile \
+          -t $(params.outputRegistry)/ace-keda-demo:$TAG /work/ibmint-output/home/aceuser
+        date
+        buildah  --storage-driver=overlay push --tls-verify=false --digestfile /tmp/image-digest \
+          $(params.outputRegistry)/ace-keda-demo:$TAG  "docker://$(params.outputRegistry)/ace-keda-demo:$TAG"
         date
       volumeMounts:
         - mountPath: /work
           name: work
+        - name: varlibcontainers
+          mountPath: /var/lib/containers
   volumes:
     - name: work
+      emptyDir: {}
+    # 
+    # Default buildah approach using emptyDir; takes about 40 seconds on a test SNO cluster
+    # 
+    - name: varlibcontainers
       emptyDir: {}
