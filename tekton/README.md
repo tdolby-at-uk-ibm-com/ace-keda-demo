@@ -104,7 +104,7 @@ kubectl --namespace tekton-pipelines port-forward --address 0.0.0.0 svc/tekton-d
 
 ## OpenShift
 
-Tekton is not normally installed directly with OpenShift, and the Red Hat OpenShift Pipelines operator
+Tekton is not normally installed directly on OpenShift, and the Red Hat OpenShift Pipelines operator
 would be used instead. The majority of the other steps are the same, but the registry authentication is 
 a little different: the namespace in which the pipeline and pod are running must match the project
 name in the image registry tags. The examples show 
@@ -128,12 +128,12 @@ as [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml):
 ```
     - name: outputRegistry
       # OpenShift - note that ace-keda should match the pipeline namespace
-      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda"
+      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda"
       #value: "quay.io/trevor_dolby"
       #value: "us.icr.io/ace-containers"
       #value: "aceDemoRegistry.azurecr.io"
       # Minikube
-      value: "192.168.49.2:5000/default"
+      #value: "192.168.49.2:5000/default"
 ```
 and then the pipelines can be run as usual. The OpenShift Pipeline operator provides a 
 web interface for the pipeline runs also, which may be an easier way to view progress.
