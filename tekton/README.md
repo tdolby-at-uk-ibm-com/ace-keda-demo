@@ -1,15 +1,14 @@
 # Tekton pipeline
 
-Used to run the pipeline stages via Tekton. Relies on the same IBM Cloud kubernetes cluster as 
-before, and can also be run using OpenShift (tested on 4.12).
+Used to run the pipeline stages via Tekton. 
 
 ![Pipeline overview](/demo-infrastructure/images/tekton-pipeline.png)
 
 The tasks rely on several different containers:
 
 - The Tekton git-init image to run the initial git clones.
-- The ace-minimal image for a small Alpine-based runtime container (~420MB, which fits into the IBM 
-Cloud container registry free tier limit of 512MB) with the MQ client installed..  See 
+- The ace-minimal-mqclient image for a small Alpine-based runtime container (~420MB, which fits into
+the IBM Cloud container registry free tier limit of 512MB) with the MQ client installed..  See 
 https://github.com/trevor-dolby-at-ibm-com/ace-docker/tree/master/experimental/ace-minimal for more 
 details on the minimal image, and [minimal image build instructions](minimal-image-build/README.md)
 on how to build the various pre-req images.
@@ -21,15 +20,14 @@ to use this repo.
 ## Getting started
 
 A Kubernetes cluster will be needed, with Minikube (see [minikube/README.md](/tekton/minikube/README.md)) and
-OpenShift 4.14 being the two most-tested. Other clusters should also work with appropriate adjustments to
-ingress routing and container registry settings. Note that the Cloud Pak for Integration (CP4i) has a separate
-pipeline the creates IntegrationRuntime CRs with custom images; see [os/cp4i/README.md](/tekton/os/cp4i/README.md)
-for more details.
+OpenShift 4.16 being the two most-tested. Other clusters should also work with appropriate adjustments to
+ingress routing and container registry settings. 
 
-Many of the artifacts in this repo (such as ace-keda-demo-pipeline-run.yaml) will need to be customized depending on
-the exact cluster layout. The defaults are set up for Minikube running with Docker on Ubuntu, and may need
-to be modified depending on network addresses, etc. The most-commonly-modified files have options in the
-comments, with [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml) being one example:
+Many of the artifacts in this repo (such as ace-keda-demo-pipeline-run.yaml) will need to be customized 
+depending on the exact cluster layout. The defaults are set up for Minikube running with Docker on Ubuntu, 
+and may needto be modified depending on network addresses, etc. The most-commonly-modified files have 
+options in the comments, with [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml) being 
+one example:
 ```
     - name: buildImage
       # ace-minimal can be built from the ACE package without needing a key
@@ -40,12 +38,24 @@ comments, with [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml
       #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
 ```
 
- The Tekton pipeline relies on docker credentials being provided for Kaniko to use when pushing 
-the built image, and these credentials must be associated with the service account for the pipeline. 
-If this has not already been done elsewhere, then create as follows, with appropriate changes for a 
-fork of this repo:
+The Tekton pipeline and ACE runtime rely on having permission to push to the container registry,
+and this may require the provision of credentials for the service accounts to use:
+- Minikube container registry does not have authentication enabled by default, and so dummy
+credentials can be used for the `regcred` secret:
 ```
-kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker-username=iamapikey --docker-password=<your-api-key>
+kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker-username=notused --docker-password=notused
+kubectl apply -f tekton/service-account.yaml
+```
+- OpenShift container registry does have authentication enabled, but this is integrated and requires
+only that the service accounts have the `system:image-builder` role and dummy credentials can be used:
+```
+kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker-username=notused --docker-password=notused
+kubectl apply -f tekton/service-account.yaml
+```
+- External registries normally require authentication, and in that case the default runtime 
+service account needs to be given the credentials:
+```
+kubectl create secret docker-registry regcred --docker-server=us.icr.io --docker-username=<user> --docker-password=<password>
 kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
 kubectl apply -f tekton/service-account.yaml
 ```
@@ -53,13 +63,15 @@ The service account also has the ability to create services, deployments, etc, w
 for running the service.
 
 Setting up the pipeline requires Tekton to be installed, tasks to be created, and the pipeline itself
-to be configured:
+to be configured. For Minikube and other Kubernetes clusters, Tekton must be installed first (which
+may have been done already during ace-minimal-image build):
 ```
 kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 kubectl apply -f tekton/10-ace-keda-demo-build-task.yaml
 kubectl apply -f tekton/20-ace-keda-demo-deploy-to-cluster-task.yaml
 kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
 ```
+Note that for Openshift, Tekton should not be installed this way; see below for details.
 
 Once that has been accomplished, the simplest way to run the pipeline is
 ```
