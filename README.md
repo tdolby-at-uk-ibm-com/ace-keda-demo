@@ -61,17 +61,23 @@ kubectl apply -f keda/secrets.yaml
 kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
 
-### MQ in a container
+### TLS and MQ
 
-MQ containers support the use of the MQ REST API and KEDA can poll the queue depth in the same
-way it does with MQ on Cloud. Setting up TLS can be challenging unless the queue manager REST 
-API uses a certificate issued by a well-known CA; testing has been completed using version 3.3.0 of
-the MQ operator with MQ 9.4.0.6.
+MQ on Cloud is an easy way to experiment with KEDA, but MQ in containers now supports the use of 
+the MQ REST API and KEDA can poll the queue depth in the same way it does with MQ on Cloud. Setting 
+up TLS can be challenging unless the queue manager REST API uses a certificate issued by a 
+well-known CA; testing has been completed using version 3.3.0 of the MQ operator with MQ 9.4.0.6.
 
 TLS connectivity can be checked with curl as follows:
 ```
  curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
  ```
+
+The ACE application container is configured to avoid certificate validation (see 
+[demo-infrastructure/mqclient.ini](/demo-infrastructure/mqclient.ini) and also to send 
+the hostname as the SNI data when connecting; while doing so is not recommended for 
+production, this repo is intended to show how to use ACE with KEDA and so TLS setup
+is not critical.
 
 ### Building the ACE app
 

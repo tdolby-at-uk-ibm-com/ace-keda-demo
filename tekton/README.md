@@ -137,6 +137,3 @@ as [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml):
 ```
 and then the pipelines can be run as usual. The OpenShift Pipeline operator provides a 
 web interface for the pipeline runs also, which may be an easier way to view progress.
-
-## Possible enhancements
-
