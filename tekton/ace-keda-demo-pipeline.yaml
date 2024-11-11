@@ -11,7 +11,7 @@ spec:
       default: "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
     - name: revision
       type: string
-      default: "v13-update"
+      default: "main"
     - name: buildImage
       type: string
     - name: runtimeBaseImage

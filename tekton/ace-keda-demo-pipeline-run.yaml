@@ -39,4 +39,4 @@ spec:
     - name: url
       value: "https://github.com/tdolby-at-uk-ibm-com/ace-keda-demo"
     - name: revision
-      value: "v13-update"
+      value: "main"
