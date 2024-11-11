@@ -3,7 +3,7 @@
 Used to run the pipeline stages via Tekton. Relies on the same IBM Cloud kubernetes cluster as 
 before, and can also be run using OpenShift (tested on 4.12).
 
-![Pipeline overview](ace-keda-demo-pipeline-picture.png)
+![Pipeline overview](/demo-infrastructure/images/tekton-pipeline.png)
 
 The tasks rely on several different containers:
 
