@@ -23,7 +23,7 @@ minikube addons enable dashboard
 minikube addons enable registry
 minikube addons enable metrics-server
 
-ubuntu@minikube-20231123:~/github.com/ace-demo-pipeline$ minikube ip
+ubuntu@minikube-20231123:~/github.com/ace-keda-demo$ minikube ip
 192.168.49.2
 
 kubectl apply -f tekton/minikube/minikube-registry-nodeport.yaml
@@ -35,8 +35,8 @@ kubectl apply -f tekton/service-account.yaml
 ```
 
 
-For `ace-minimal` , update the `aceDownloadUrl` parameter in
-tekton/minimal-image-build/ace-minimal-build-image-pipeline-run.yaml to a valid download URL
+For `ace-minimal-mqclient` , update the `aceDownloadUrl` parameter in
+tekton/minimal-image-build/ace-minimal-image-pipeline-run.yaml to a valid download URL
 (see [setting-the-correct-product-version](/tekton/minimal-image-build/README.md#setting-the-correct-product-version)
 for details) and then run:
 ```
@@ -49,12 +49,11 @@ tkn pipelinerun logs -L -f
 
 Building and deploying the application:
 ```
-kubectl apply -f tekton/10-ibmint-ace-build-task.yaml
-kubectl apply -f tekton/20-deploy-to-cluster-task.yaml
-kubectl apply -f tekton/21-knative-deploy-task.yaml
-kubectl apply -f tekton/ace-pipeline.yaml
+kubectl apply -f tekton/10-ace-keda-demo-build-task.yaml
+kubectl apply -f tekton/20-ace-keda-demo-deploy-to-cluster-task.yaml
+kubectl apply -f tekton/ace-keda-demo-pipeline.yaml
 
-kubectl create -f tekton/ace-pipeline-run.yaml
+kubectl create -f tekton/ace-keda-demo-pipeline-run.yaml
 tkn pipelinerun logs -L -f
 ```
 The application should now be available and processing MQ messages.

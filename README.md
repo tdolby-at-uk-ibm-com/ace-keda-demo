@@ -73,11 +73,11 @@ TLS connectivity can be checked with curl as follows:
  curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
  ```
 
-The ACE application container is configured to avoid certificate validation (see 
-[demo-infrastructure/mqclient.ini](/demo-infrastructure/mqclient.ini) and also to send 
-the hostname as the SNI data when connecting; while doing so is not recommended for 
-production, this repo is intended to show how to use ACE with KEDA and so TLS setup
-is not critical.
+The ACE application container is configured to avoid MQ certificate validation (see 
+[demo-infrastructure/mqclient.ini](/demo-infrastructure/mqclient.ini)) and also to send 
+the hostname as the SNI data when connecting; while avoiding validation is not recommended
+for production, this repo is intended to show how to use ACE with KEDA and so TLS setup
+is less critical.
 
 ### Building the ACE app
 
