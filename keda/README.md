@@ -22,7 +22,8 @@ for use by the autoscaler polling.
 
 Creates a job to put MQ messages to the demo queue. Only needed if many messages
 are desired, and the demo can be run using the MQ console to put test messages to
-the queue.
+the queue. The producer configuration does not include any TLS setup, so the MQ 
+channels must be configured not to use SSL.
 
 Note that if this demo is run using a Developer edition container, then the ACE flow
 will only process one message per second; use the producer container with care in this case.

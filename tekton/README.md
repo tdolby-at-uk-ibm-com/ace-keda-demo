@@ -12,6 +12,7 @@ the IBM Cloud container registry free tier limit of 512MB) with the MQ client in
 https://github.com/trevor-dolby-at-ibm-com/ace-docker/tree/master/experimental/ace-minimal for more 
 details on the minimal image, and [minimal image build instructions](minimal-image-build/README.md)
 on how to build the various pre-req images.
+- Crane or buildah images to build the ACE application container image.
 
 For the initial testing, variants of ace-minimal:13.0.1.0-alpine-mqclient have been pushed to tdolby/experimental 
 on DockerHub, but this is not a stable location, and the images should be rebuilt by anyone attempting 
@@ -25,21 +26,23 @@ ingress routing and container registry settings.
 
 Many of the artifacts in this repo (such as ace-keda-demo-pipeline-run.yaml) will need to be customized 
 depending on the exact cluster layout. The defaults are set up for Minikube running with Docker on Ubuntu, 
-and may needto be modified depending on network addresses, etc. The most-commonly-modified files have 
+and may need to be modified depending on network addresses, etc. The most-commonly-modified files have 
 options in the comments, with [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml) being 
 one example:
 ```
     - name: buildImage
       # ace-minimal can be built from the ACE package without needing a key
       # OpenShift - note that ace-keda should match the pipeline namespace
-      value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient"
+      #value: "image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient"
+      # External registry
       #value: "quay.io/trevor_dolby/ace-minimal:13.0.1.0-alpine-mqclient"
       # Minikube
-      #value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
+      value: "192.168.49.2:5000/default/ace-minimal:13.0.1.0-alpine-mqclient"
 ```
 
 The Tekton pipeline and ACE runtime rely on having permission to push to the container registry,
 and this may require the provision of credentials for the service accounts to use:
+
 - Minikube container registry does not have authentication enabled by default, and so dummy
 credentials can be used for the `regcred` secret:
 ```
@@ -111,8 +114,8 @@ name in the image registry tags. The examples show
 `image-registry.openshift-image-registry.svc.cluster.local:5000/ace-keda/ace-minimal:13.0.1.0-alpine-mqclient`,
 which will work for the `ace-keda` namespace.
 
-To run outside the default namespace, a special SecurityContextConstraints must be created and
-associated with the service account:
+To run outside the default namespace, a special SecurityContextConstraints definition must be created
+and associated with the service account:
 ```
 kubectl apply -f tekton/ace-scc.yaml
 oc adm policy add-scc-to-user ace-scc -z ace-tekton-service-account
@@ -136,4 +139,4 @@ as [ace-keda-demo-pipeline-run.yaml](ace-keda-demo-pipeline-run.yaml):
       #value: "192.168.49.2:5000/default"
 ```
 and then the pipelines can be run as usual. The OpenShift Pipeline operator provides a 
-web interface for the pipeline runs also, which may be an easier way to view progress.
+web interface for the pipeline runs, which may be an easier way to view progress.

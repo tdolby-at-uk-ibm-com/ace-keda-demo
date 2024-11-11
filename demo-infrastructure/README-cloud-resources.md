@@ -76,3 +76,11 @@ with TLS, however, and so the CLOUD.APP.SVRCONN channel may need to run without 
 
 This demo assumes the `keda` user has been created and allowed to connect and access DEMO.QUEUE
 and that admin credentials are available for KEDA polling to use.
+
+Note that the hostname and port number are included in the secret despite not being strictly 
+confidential: this is done because it allows the values to be changed easily without needing 
+to rebuild the container while  avoiding the need for a separate config map (thereby keeping 
+the demo simpler); [ace-startup-script.sh](/demo-infrastructure/ace-startup-script.sh) reads 
+the values from the secret and updates the [MQEndpoint policy](/DefaultPolicies/MQoC.policyxml) 
+at container start time. A GitOps approach would normally have separate MQEndpoint policies 
+for each queue manager.

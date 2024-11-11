@@ -52,7 +52,7 @@ kubectl apply --server-side -f https://github.com/kedacore/keda/releases/downloa
 (Note that `--server-side` is needed to avoid errors saying `The CustomResourceDefinition "scaledjobs.keda.sh" 
 is invalid: metadata.annotations: Too long: must have at most 262144 bytes`)
 
-Update the keda/secrets.yaml file to contain the correct MQ application and admin credentials
+Update the [keda/secrets.yaml](keda/secrets.yaml) file to contain the correct MQ application and admin credentials
 (currently blank) for use by the KEDA scaler. This file then needs to be applied before 
 the app container is created, and the mq-secret must be create to allow the container to run:
 
@@ -84,9 +84,9 @@ is less critical.
 See the [tekton README](tekton/README.md) for build instructions, including building the
 ace-minimal-mqclient containers.
 
-Once the build has succeeded and the application is receiving messages as expeted, modify
-keda/keda-configuration.yaml to contain the correct credentials and communication paremeters, 
-and then apply the file to enable scaling for the ace-keda-demo container:
+Once the build has succeeded and the application is receiving messages as expected, modify
+[keda/keda-configuration.yaml](keda/keda-configuration.yaml) to contain the correct credentials 
+and communication paremeters, and then apply the file to enable scaling for the ace-keda-demo container:
 ```
 kubectl apply -f keda/keda-configuration.yaml
 ```
@@ -111,13 +111,13 @@ keda-hpa-ace-keda-demo   Deployment/ace-keda-demo   7/2 (avg)           1       
 ## Cloud Pak for Integration (CP4i) ACE operator
 
 KEDA assumes that it is scaling Kubernetes Deployments, but this approach will not work when
-scaling servers managed by the ACE operator using IntegrationServer or IntegrationRuntime
+scaling servers managed by the ACE operator using IntegrationRuntime or IntegrationServer
 custom resources (CRs). Although KEDA can change the number of replicas in the Deployment, 
 the operator will be trying to ensure the Deployment for the server matches the CR, and so
 it will change the replica setting back to the CR-provided value.
 
-The solution is to scale the CR itself rather than the Deployment. Both IntegrationServer and
-IntegrationRuntime provide the correct interfaces to enable KEDA to set the number of replicas,
+The solution is to scale the CR itself rather than the Deployment. Both IntegrationRuntime and
+IntegrationServer provide the correct interfaces to enable KEDA to set the number of replicas,
 and the only change required is to the `scaleTargetRef` in the KEDA configuration. Instead of
 ```
   scaleTargetRef:
