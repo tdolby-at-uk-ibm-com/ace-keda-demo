@@ -35,10 +35,12 @@ The application reads messages from the queue and prints them to the server cons
 
 ## Building and running the demo
 
-A Kubernetes cluster is needed along with a container registry and an MQ queue manager. These
-can all be provisioned free of charge in the IBM Cloud, or existing infrastructure can be used.
-See [README-cloud-resources.md](demo-infrastructure/README-cloud-resources.md) for instructions
-explaining how to create the IBM Cloud resources.
+A Kubernetes cluster is needed along with a container registry and an MQ queue manager.
+[Minikube](https://minikube.sigs.k8s.io/docs/) (easily installed locally) and OpenShift 
+can be used to provide the cluster and registry (external registries can also be used), while
+MQ on Cloud can be provisioned free of charge in the IBM Cloud, or existing infrastructure 
+can be used. See [README-cloud-resources.md](demo-infrastructure/README-cloud-resources.md) 
+for instructions explaining how to create the IBM Cloud resources.
 
 ### Installing KEDA
 
@@ -58,17 +60,15 @@ the app container is created, and the mq-secret must be create to allow the cont
 kubectl apply -f keda/secrets.yaml
 kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
+
 ### MQ in a container
 
-TLS essential for both MQ channels and HTTPS
+MQ containers support the use of the MQ REST API and KEDA can poll the queue depth in the same
+way it does with MQ on Cloud. Setting up TLS can be challenging unless the queue manager REST 
+API uses a certificate issued by a well-known CA; testing has been completed using version 3.3.0 of
+the MQ operator with MQ 9.4.0.6.
 
-IBM MQ
-3.3.0 provided by IBM
-
-
-Name:        IBM MQ
-Version:     9.4.0.6
-
+TLS connectivity can be checked with curl as follows:
 ```
  curl -u admin:passw0rd -X POST --data '{"type": "runCommand", "parameters": {"command": "DIS QL(*)"}}' -H "ibm-mq-rest-csrf-token: abc" -H "Content-Type: application/json" -k -v https://qm-dev-ibm-mq-web-ace-keda.apps.openshift-20240503.dolbyfamily.org/ibmmq/rest/v3/admin/action/qmgr/QUICKSTART/mqsc
  ```
@@ -76,11 +76,11 @@ Version:     9.4.0.6
 ### Building the ACE app
 
 See the [tekton README](tekton/README.md) for build instructions, including building the
-ace-minimal containers.
+ace-minimal-mqclient containers.
 
-Once the build has succeeded, modify keda/keda-configuration.yaml to contain the correct
-credentials and communication paremeters, and then apply the file to enable scaling for
-the ace-keda-demo container:
+Once the build has succeeded and the application is receiving messages as expeted, modify
+keda/keda-configuration.yaml to contain the correct credentials and communication paremeters, 
+and then apply the file to enable scaling for the ace-keda-demo container:
 ```
 kubectl apply -f keda/keda-configuration.yaml
 ```
@@ -117,19 +117,19 @@ and the only change required is to the `scaleTargetRef` in the KEDA configuratio
   scaleTargetRef:
     name: ace-keda-demo
 ```
-the CR can be specified instead, as follows for an IntegrationServer:
-```
-  scaleTargetRef:
-    apiVersion: appconnect.ibm.com/v1beta1
-    kind: IntegrationServer
-    name: is-01-consumemq
-```
-and for IntegrationRuntime CRs:
+the CR can be specified instead, as follows for IntegrationRuntimes:
 ```
   scaleTargetRef:
     apiVersion: appconnect.ibm.com/v1beta1
     kind: IntegrationRuntime
     name: ir-01-quickstart
+```
+and for IntegrationServer CRs:
+```
+  scaleTargetRef:
+    apiVersion: appconnect.ibm.com/v1beta1
+    kind: IntegrationServer
+    name: is-01-consumemq
 ```
 
 ## Common errors
