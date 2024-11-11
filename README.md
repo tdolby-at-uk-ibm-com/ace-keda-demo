@@ -21,8 +21,10 @@ or another MQ client (including the "Create" button on a queue in the MQ on Clou
 messages. KEDA is configured to monitor the queue depth of the MQ on Cloud queue (DEMO.QUEUE in this case)
 and scale the ACE consumer container appropriately.
 
-The application containers use the ace-minimal image built using instructions (and Tekton build
-artifacts) from https://github.com/ot4i/ace-demo-pipeline/tree/master/tekton/minimal-image-build
+The application containers use the ace-minimal-mqclient image built from 
+https://github.com/trevor-dolby-at-ibm-com/ace-docker/blob/main/experimental/README.md but KEDA can 
+also control CP4i ACE containers via the IntegrationRuntime (see below for details).
+
 
 ## Application description
 
