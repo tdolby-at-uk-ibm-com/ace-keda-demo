@@ -47,7 +47,7 @@ for instructions explaining how to create the IBM Cloud resources.
 KEDA can be installed using the operator (most recent version tested is
 RedHat's Custom Metrics Autoscaler 2.14.1 on OpenShift 4.16) or via kubectl:
 ```
-kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.0/keda-2.16.0.yaml
+kubectl apply --server-side -f https://github.com/kedacore/keda/releases/download/v2.16.1/keda-2.16.1.yaml
 ```
 (Note that `--server-side` is needed to avoid errors saying `The CustomResourceDefinition "scaledjobs.keda.sh" 
 is invalid: metadata.annotations: Too long: must have at most 262144 bytes`)
@@ -78,6 +78,13 @@ The ACE application container is configured to avoid MQ certificate validation (
 the hostname as the SNI data when connecting; while avoiding validation is not recommended
 for production, this repo is intended to show how to use ACE with KEDA and so TLS setup
 is less critical.
+
+Note that KEDA versions earlier than v2.16.1 (the latest tested) may have issues connecting
+to queue managers with self-signed certificates. Current KEDA levels support setting
+```
+        unsafeSsl: "true"
+```
+in the ScaledObject configuration, but earlier releases had some issues with this.
 
 ### Building the ACE app
 
