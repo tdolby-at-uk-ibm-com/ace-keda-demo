@@ -52,14 +52,16 @@ kubectl apply --server-side -f https://github.com/kedacore/keda/releases/downloa
 (Note that `--server-side` is needed to avoid errors saying `The CustomResourceDefinition "scaledjobs.keda.sh" 
 is invalid: metadata.annotations: Too long: must have at most 262144 bytes`)
 
-Update the [keda/secrets.yaml](keda/secrets.yaml) file to contain the correct MQ application and admin credentials
-(currently blank) for use by the KEDA scaler. This file then needs to be applied before 
-the app container is created, and the mq-secret must be create to allow the container to run:
+Create the `keda-ibmmq-secret` for use by KEDA in polling the MQ REST API and the `mq-secret`
+for the ACE container to use:
 
 ```
-kubectl apply -f keda/secrets.yaml
+kubectl create secret generic keda-ibmmq-secret --from-literal=ADMIN_USER='admin' --from-literal=ADMIN_PASSWORD='passw0rd'
 kubectl create secret generic mq-secret --from-literal=USERID='app user' --from-literal=PASSWORD='app key' --from-literal=hostName='mqoc-fd48.qm.us-south.mq.appdomain.cloud' --from-literal=portNumber='31247'
 ```
+These could be merged into one, but in most cases the ACE server and the KEDA scaler itself will
+be running with different credentials (possibly in different namespaces) so using two secrets in
+this demo keeps the separation of concerns.
 
 ### TLS and MQ
 
@@ -84,7 +86,7 @@ to queue managers with self-signed certificates. Current KEDA levels support set
 ```
         unsafeSsl: "true"
 ```
-in the ScaledObject configuration, but earlier releases had some issues with this.
+in the ScaledObject configuration, but earlier releases had some issues using this setting.
 
 ### Building the ACE app
 
@@ -176,24 +178,8 @@ The solution is to set the queueDepth to a positive value, as this does not prev
 
 ### KEDA failing to authenticate to the MQ queue manager
 
-Verify the credentials used, noting that the values in keda-secrets.yaml must be base64-encoded and
-must not have encoded newlines; creating the encoded text by running `echo` and `base64` can lead
-to this without it being obvious.
-
-Running
-```
-echo "keda" | base64
-```
-will produce a valid base64 string of "a2VkYQo=" but this actually includes a newline and will
-not work as expected when used for authentication.
-
-Instead, run
-```
-echo -n "keda" | base64
-```
-which will produce "a2VkYQ==" (without a newline).
-
-This problem can affect both usernames and passwords, and can be hard to spot.
+Verify the credentials used, ensuring that the correct credentials have been placed in the different secrets,
+and that the KEDA credentials have permission to use the MQ REST API.
 
 ### KEDA not using admin credentials correctly
 
